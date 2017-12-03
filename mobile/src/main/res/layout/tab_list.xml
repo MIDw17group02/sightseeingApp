@@ -1,0 +1,22 @@
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/constraintLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.de.testssapplication.POISelectorActivity">
+
+    <!--<TextView
+       android:text="TAB11"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content" />-->
+
+    <GridView
+        android:id="@+id/poi_grid_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:numColumns="auto_fit"
+        android:gravity="center" />
+
+
+</android.support.constraint.ConstraintLayout>
