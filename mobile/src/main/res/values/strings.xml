@@ -1,5 +1,0 @@
-<resources>
-    <string name="app_name">SightSeeingApplication</string>
-    <string name="google_maps_key">your_key_here</string>
-    <string name="option_get_place">Get POIs</string>
-</resources>
