@@ -6,16 +6,15 @@
     android:layout_height="match_parent"
     tools:context="com.example.de.testssapplication.ConfigurationActivity">
 
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+    <TableLayout
+        android:layout_margin="@dimen/activity_vertical_margin"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-        <LinearLayout
-            android:layout_marginTop="32dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+        <TableRow
+            android:layout_marginTop="30dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
 
             <TextView
                 android:id="@+id/label_roundtour"
@@ -26,17 +25,17 @@
 
             <Switch
                 android:id="@+id/switch_roundtour"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
+                android:layout_gravity="right"
                 android:text="@string/roundOff" />
+        </TableRow>
 
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+        <TableRow
+            android:layout_marginTop="30dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
 
             <TextView
                 android:id="@+id/label_distance"
@@ -47,19 +46,25 @@
 
             <EditText
                 android:id="@+id/edit_text_distance"
-                android:layout_width="120dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
-                android:lines="1"
-                android:inputType="numberDecimal"
+                android:layout_gravity="right"
                 android:gravity="right"
+                android:inputType="numberDecimal"
+                android:lines="1"
                 android:text="2.0" />
-        </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="km" />
+        </TableRow>
+
+        <TableRow
+            android:layout_marginTop="30dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
 
             <TextView
                 android:id="@+id/label_duration"
@@ -70,16 +75,23 @@
 
             <EditText
                 android:id="@+id/edit_text_duration"
-                android:layout_width="120dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
-                android:lines="1"
-                android:inputType="numberDecimal"
+                android:layout_gravity="right"
                 android:gravity="right"
-                android:text="1" />
-    </LinearLayout>
+                android:inputType="numberDecimal"
+                android:lines="1"
+                android:text="1.0" />
 
-    </LinearLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="h" />
+
+        </TableRow>
+
+    </TableLayout>
 
     <Button
         android:id="@+id/continueSelectionButton"
