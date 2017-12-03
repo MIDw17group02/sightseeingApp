@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -44,6 +45,19 @@ public class DataModel implements LocationListener {
             return nearbyPOIs.get(index);
         }
         return null;
+    }
+
+    public List<POI> getSelectedPOIs() {
+
+        List<POI> selectedPOIs = new ArrayList<>();
+
+        for (POI poi : nearbyPOIs) {
+            if (poi.isSelected()) {
+                selectedPOIs.add(poi);
+            }
+        }
+
+        return selectedPOIs;
     }
 
     public List<POI> getNearbyPOIs() {
