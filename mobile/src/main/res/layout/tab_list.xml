@@ -13,8 +13,10 @@
 
     <GridView
         android:id="@+id/poi_grid_list"
+        android:layout_margin="5dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:verticalSpacing="5dp"
         android:numColumns="auto_fit"
         android:gravity="center" />
 

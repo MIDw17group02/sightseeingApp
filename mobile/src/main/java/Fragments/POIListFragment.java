@@ -3,6 +3,7 @@ package Fragments;
 import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -78,19 +79,16 @@ public class POIListFragment extends Fragment {
         public View getView(int i, View convertView, ViewGroup viewGroup) {
 
             POI poi = model.getPOI(i);
-            Log.d("WHY", "i " + String.valueOf(i) + " " + poi.getName());
             View v;
 
             if (convertView == null) {
                 final LayoutInflater layoutInflater = LayoutInflater.from(viewGroup.getContext());
-                //convertView = layoutInflater.inflate(R.layout.grid_view_poi, null);
                 v = layoutInflater.inflate(R.layout.grid_view_poi, null);
             } else {
                 v = (View) convertView;
             }
 
             ImageView poiImageView = (ImageView) v.findViewById(R.id.poi_grid_image);
-            poiImageView.setPadding(5,5,5,5);
             TextView poiTextView = (TextView) v.findViewById(R.id.poi_grid_name);
 
             String name = poi.getName();
@@ -106,6 +104,7 @@ public class POIListFragment extends Fragment {
             int textSize = (int) getResources().getDimension(R.dimen.grid_poi_element_textSize);
             bm = Bitmap.createScaledBitmap(bm, width, (width - 3 * textSize), false);
             poiImageView.setImageBitmap(bm);
+            poiImageView.setPadding(0,textSize+6,0,0);
 
             if (poi.isSelected()) {
                 v.setBackgroundResource(R.layout.grid_poi_shape);
