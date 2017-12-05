@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -37,6 +37,7 @@ public class DataModel implements LocationListener {
     public void addPOI(POI poi) {
         if (poi != null && !nearbyPOIs.contains(poi)) {
             nearbyPOIs.add(poi);
+            Collections.sort(nearbyPOIs);
         }
     }
 

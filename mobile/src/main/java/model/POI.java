@@ -1,11 +1,12 @@
 package model;
 
 import android.graphics.Bitmap;
+import android.support.annotation.NonNull;
 
 /**
  * Created by de on 01.12.2017.
  */
-public class POI {
+public class POI implements Comparable {
 
     private String name;
     private double longitude;
@@ -129,4 +130,16 @@ public class POI {
         this.reference = reference;
     }
 
+    @Override
+    public int compareTo(@NonNull Object o) {
+
+        POI other = (POI) o;
+        if (getDistance_to_start() < other.getDistance_to_start()) {
+            return -1;
+        } else if(getDistance_to_start() > other.getDistance_to_start()) {
+            return 1;
+        }
+
+        return 0;
+    }
 }
