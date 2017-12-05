@@ -19,4 +19,6 @@
 
     <dimen name="grid_poi_element_width">180dp</dimen>
     <dimen name="grid_poi_element_textSize">12dp</dimen>
+
+    <dimen name="configuration_activity_text_size">19sp</dimen>
 </resources>

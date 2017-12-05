@@ -6,92 +6,107 @@
     android:layout_height="match_parent"
     tools:context="com.example.de.testssapplication.ConfigurationActivity">
 
-    <TableLayout
-        android:layout_margin="@dimen/activity_vertical_margin"
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_marginTop="40dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <TableRow
-            android:layout_marginTop="30dp"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" >
+        <LinearLayout
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginHorizontal="46dp"
+            android:layout_marginVertical="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
 
             <TextView
                 android:id="@+id/label_roundtour"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="8dp"
+                android:layout_marginRight="110dp"
+                android:textSize="@dimen/configuration_activity_text_size"
                 android:text="@string/roundLabel" />
 
             <Switch
                 android:id="@+id/switch_roundtour"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:layout_gravity="right"
+                android:textSize="@dimen/configuration_activity_text_size"
                 android:text="@string/roundOff" />
-        </TableRow>
+        </LinearLayout>
 
-        <TableRow
-            android:layout_marginTop="30dp"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" >
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginHorizontal="46dp"
+            android:layout_marginVertical="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/label_duration"
+                android:layout_width="wrap_content"
+                android:layout_marginRight="160dp"
+                android:textSize="@dimen/configuration_activity_text_size"
+                android:layout_height="wrap_content"
+                android:text="@string/durationLabel" />
+
+            <EditText
+                android:id="@+id/edit_text_duration"
+                android:layout_width="40dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:gravity="right"
+                android:inputType="numberDecimal"
+                android:lines="1"
+                android:textSize="@dimen/configuration_activity_text_size"
+                android:text="1.0" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/configuration_activity_text_size"
+                android:text="h" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginHorizontal="46dp"
+            android:layout_marginVertical="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
 
             <TextView
                 android:id="@+id/label_distance"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="8dp"
+                android:layout_marginRight="146dp"
+                android:textSize="@dimen/configuration_activity_text_size"
                 android:text="@string/distanceLabel" />
 
             <EditText
                 android:id="@+id/edit_text_distance"
-                android:layout_width="match_parent"
+                android:layout_width="40dp"
                 android:layout_height="wrap_content"
-                android:layout_margin="8dp"
                 android:layout_gravity="right"
                 android:gravity="right"
                 android:inputType="numberDecimal"
+                android:textSize="@dimen/configuration_activity_text_size"
                 android:lines="1"
                 android:text="2.0" />
 
             <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="km" />
-        </TableRow>
-
-        <TableRow
-            android:layout_marginTop="30dp"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" >
-
-            <TextView
-                android:id="@+id/label_duration"
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:text="@string/durationLabel" />
+                android:textSize="@dimen/configuration_activity_text_size"
+                android:text="km"/>
+        </LinearLayout>
 
-            <EditText
-                android:id="@+id/edit_text_duration"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:layout_gravity="right"
-                android:gravity="right"
-                android:inputType="numberDecimal"
-                android:lines="1"
-                android:text="1.0" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="h" />
-
-        </TableRow>
-
-    </TableLayout>
+    </LinearLayout>
 
     <Button
         android:id="@+id/continueSelectionButton"

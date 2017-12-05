@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 /**
  * Created by de on 01.12.2017.
  */
-
 public class POI {
 
     private String name;

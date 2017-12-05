@@ -3,7 +3,7 @@
     <string name="google_maps_key">AIzaSyDzw47QwwNwNM2kFne6KsviyP5bv1SyDak</string>
     <string name="option_get_place">Get POIs</string>
     <string name="title_activity_start">StartActivity</string>
-    <string name="title_activity_configuration">ConfigurationActivity</string>
+    <string name="title_activity_configuration">Kriterien</string>
 
     <!--
     This string is used for square devices and overridden by hello_world in
@@ -13,8 +13,8 @@
     <string name="roundLabel">Rundgang</string>
     <string name="distanceLabel">Distanz</string>
     <string name="durationLabel">Dauer</string>
-    <string name="roundOn">An</string>
-    <string name="roundOff">Aus</string>
+    <string name="roundOn">An\ \ \ </string>
+    <string name="roundOff">Aus\ \ </string>
     <string name="continueStr">weiter</string>
     <string name="ok">OK</string>
     <string name="loading_pois">Lade Sehenswürdigkeiten...</string>

@@ -49,6 +49,8 @@ public class ConfigurationActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, location_permission_request);
         }
 
+        setTitle(getString(R.string.title_activity_configuration));
+
         progressDialog = new ProgressDialog(this);
         EditTextDistance = (EditText) findViewById(R.id.edit_text_distance);
         EditTextDuration = (EditText) findViewById(R.id.edit_text_duration);
