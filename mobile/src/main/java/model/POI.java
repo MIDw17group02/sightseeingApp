@@ -18,6 +18,8 @@ public class POI {
     private String place_id;
     private String reference;
 
+    private double distance_to_start = -1.0; // TODO update this usage by using the location!
+
     // Indicate if the user wants to visit this POI.
     private boolean selected = false;
 
@@ -37,6 +39,14 @@ public class POI {
         }
 
         return true;
+    }
+
+    public double getDistance_to_start() {
+        return distance_to_start;
+    }
+
+    public void setDistance_to_start(double distance_to_start) {
+        this.distance_to_start = distance_to_start;
     }
 
     public boolean isSelected() {

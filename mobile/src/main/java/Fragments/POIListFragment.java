@@ -15,10 +15,12 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.de.testssapplication.R;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -88,12 +90,22 @@ public class POIListFragment extends Fragment {
                 v = (View) convertView;
             }
 
-            ImageView poiImageView = (ImageView) v.findViewById(R.id.poi_grid_image);
             TextView poiTextView = (TextView) v.findViewById(R.id.poi_grid_name);
+            ImageView poiImageView = (ImageView) v.findViewById(R.id.poi_grid_image);
+            TextView poiTextDistance = (TextView) v.findViewById(R.id.poi_grid_distance);
 
             String name = poi.getName();
             if (name != null) {
                 poiTextView.setText(poi.getName());
+            }
+            double distance = poi.getDistance_to_start();
+            if (distance >= 0.0) {
+                if (distance < 1.0) {
+                    poiTextDistance.setText(String.valueOf((int) (distance*1000.0)) + " m");
+                } else {
+                    DecimalFormat df = new DecimalFormat("#.##");
+                    poiTextDistance.setText(String.valueOf(df.format(distance)) + " km");
+                }
             }
 
             Bitmap bm = poi.getPhoto();

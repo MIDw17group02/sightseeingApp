@@ -54,6 +54,10 @@ public class POIFetcher {
      */
     public static void requestPOIs(final Context context, double latitude, double longitude, int radius) {
 
+        Location mLoc = new Location("mLoc");
+        mLoc.setLatitude(latitude);
+        mLoc.setLongitude(longitude);
+
         String poiURL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?" +
                 "location=" + String.valueOf(latitude) + "," + String.valueOf(longitude) +
                 "&radius=" +String.valueOf(radius) +
@@ -72,11 +76,17 @@ public class POIFetcher {
 
             for (int i = 0; i < places.length(); i++) {
                 JSONObject placeJSON = places.getJSONObject(i);
+                Log.d("TAG", placeJSON.toString());
                 POI poi = getPOIFromJSON(context, placeJSON);
                 Log.d("POIFetcher", "Fetched POI " + poi.getName());
+
+                Location poiLoc = new Location("poiLoc");
+                poiLoc.setLatitude(poi.getLatitude());
+                poiLoc.setLongitude(poi.getLongitude());
+                poi.setDistance_to_start(mLoc.distanceTo(poiLoc)/1000);
+
                 DataModel model = DataModel.getInstance();
-                Log.d("POIFetcher", model.toString());
-                if (poi.getPhoto() != null) // Better Showcase
+                if (poi.getPhoto() != null) // Better for Showcase
                 model.addPOI(poi);
             }
 
@@ -133,8 +143,8 @@ public class POIFetcher {
                 JSONObject geometry = poiJSON.getJSONObject("geometry");
                 if (geometry.has("location")) {
                     JSONObject location = geometry.getJSONObject("location");
-                    if (geometry.has("lat")) result.setLatitude(location.getDouble("lat"));
-                    if (geometry.has("lng")) result.setLongitude(location.getDouble("lng"));
+                    if (location.has("lat")) result.setLatitude(location.getDouble("lat"));
+                    if (location.has("lng")) result.setLongitude(location.getDouble("lng"));
                 }
             }
             if (poiJSON.has("id")) result.setId(poiJSON.getString("id"));

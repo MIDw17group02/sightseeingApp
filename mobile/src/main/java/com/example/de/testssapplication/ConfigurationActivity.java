@@ -83,7 +83,7 @@ public class ConfigurationActivity extends AppCompatActivity {
                         if (model.getLastLocation() != null) {
                             POIFetcher.requestPOIs(getApplicationContext(), radius);
                         } else {
-                            POIFetcher.requestPOIs(getApplicationContext(), 52.3758916,  9.7320104, 1000);
+                            POIFetcher.requestPOIs(getApplicationContext(), 52.3758916,  9.7320104, 2000);
                         }
                         progressDialog.dismiss();
                         Intent i = new Intent(getApplicationContext(), POISelectorActivity.class);
