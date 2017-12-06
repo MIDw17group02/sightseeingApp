@@ -22,11 +22,20 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 /**
- * Created by de on 01.12.2017.
+ * Class for creating network requests.
+ * This class only implements static methods.
+ * Results of Requests are stored to the Singleton instance of the Data Model class.
+ *
  */
-
 public class POIFetcher {
 
+    /**
+     * Send a http request to the Google API server.
+     * Request all POIs in a given radius[m] around the last location stored in DataModel.
+     * The result will be stored to the DataModel.
+     * @param context Application Context for execution
+     * @param radius  Search radius in meter
+     */
     public static void requestPOIs(Context context, int radius) {
         DataModel model = DataModel.getInstance();
         Location location = model.getLastLocation();
@@ -37,7 +46,8 @@ public class POIFetcher {
 
     @Deprecated
     /**
-     * Send a http request to the google api server. Request all POIs in a given radius[m] around a position.
+     * Send a http request to the google api server.
+     * Request all POIs in a given radius[m] around the given position.
      * The result will be stored to the DataModel.
      * Please keep in mind that requests with a big radius may take a while.
      * @param context   Application Context for execution
