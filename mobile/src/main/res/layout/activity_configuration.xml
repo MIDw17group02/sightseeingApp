@@ -15,7 +15,7 @@
         <LinearLayout
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:layout_marginHorizontal="46dp"
+            android:layout_marginHorizontal="40dp"
             android:layout_marginVertical="20dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
@@ -32,6 +32,7 @@
                 android:id="@+id/switch_roundtour"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:maxLines="1"
                 android:textSize="@dimen/configuration_activity_text_size"
                 android:text="@string/roundOff" />
         </LinearLayout>
@@ -40,7 +41,7 @@
         <LinearLayout
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:layout_marginHorizontal="46dp"
+            android:layout_marginHorizontal="40dp"
             android:layout_marginVertical="20dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
@@ -68,6 +69,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/configuration_activity_text_size"
+                android:maxLines="1"
                 android:text="h" />
 
         </LinearLayout>
@@ -75,7 +77,7 @@
         <LinearLayout
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:layout_marginHorizontal="46dp"
+            android:layout_marginHorizontal="40dp"
             android:layout_marginVertical="20dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
@@ -103,6 +105,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/configuration_activity_text_size"
+                android:maxLines="1"
                 android:text="km"/>
         </LinearLayout>
 
