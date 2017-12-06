@@ -3,10 +3,8 @@ package Fragments;
 import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,19 +12,14 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.de.testssapplication.R;
 
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.List;
 
 import model.DataModel;
 import model.POI;
-import network.POIFetcher;
 
 /**
  * Created by de on 02.12.2017.
@@ -98,7 +91,7 @@ public class POIListFragment extends Fragment {
             if (name != null) {
                 poiTextView.setText(poi.getName());
             }
-            double distance = poi.getDistance_to_start();
+            double distance = poi.getDistanceToStart();
             if (distance >= 0.0) {
                 if (distance < 1.0) {
                     poiTextDistance.setText(String.valueOf((int) (distance*1000.0)) + " m");

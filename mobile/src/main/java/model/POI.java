@@ -4,22 +4,26 @@ import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 
 /**
- * Created by de on 01.12.2017.
+ * POI representation class.
+ * This class wraps up content of a POI.
+ * It implements the Comparable Interface and is compared based on the distance to the
+ * current location.
  */
 public class POI implements Comparable {
 
     private String name;
     private double longitude;
     private double latitude;
-    private double rating;
-    private String vicinity; // = address
-    private Bitmap photo;
+    private double rating; // Google rating from 0.0 to 5.0 stars.
+    private String vicinity; // = Address of the poi
+    private Bitmap photo; // Bitmap of a photo that is included in the google place.
 
     private String id;
     private String place_id;
     private String reference;
 
-    private double distance_to_start = -1.0; // TODO update this usage by using the location!
+    // TODO update this usage by using the location!
+    private double distance_to_start = -1.0; // Distance of the POI in kilo meters to the current position.
 
     // Indicate if the user wants to visit this POI.
     private boolean selected = false;
@@ -42,11 +46,11 @@ public class POI implements Comparable {
         return true;
     }
 
-    public double getDistance_to_start() {
+    public double getDistanceToStart() {
         return distance_to_start;
     }
 
-    public void setDistance_to_start(double distance_to_start) {
+    public void setDistanceToStart(double distance_to_start) {
         this.distance_to_start = distance_to_start;
     }
 
@@ -134,9 +138,9 @@ public class POI implements Comparable {
     public int compareTo(@NonNull Object o) {
 
         POI other = (POI) o;
-        if (getDistance_to_start() < other.getDistance_to_start()) {
+        if (getDistanceToStart() < other.getDistanceToStart()) {
             return -1;
-        } else if(getDistance_to_start() > other.getDistance_to_start()) {
+        } else if(getDistanceToStart() > other.getDistanceToStart()) {
             return 1;
         }
 

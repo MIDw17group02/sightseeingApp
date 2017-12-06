@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.util.Log;
-import android.widget.Toast;
 
 import model.DataModel;
 import model.POI;
@@ -17,16 +16,10 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
 
-import okhttp3.Call;
-import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-import okhttp3.ResponseBody;
 
 /**
  * Created by de on 01.12.2017.
@@ -83,7 +76,7 @@ public class POIFetcher {
                 Location poiLoc = new Location("poiLoc");
                 poiLoc.setLatitude(poi.getLatitude());
                 poiLoc.setLongitude(poi.getLongitude());
-                poi.setDistance_to_start(mLoc.distanceTo(poiLoc)/1000);
+                poi.setDistanceToStart(mLoc.distanceTo(poiLoc)/1000);
 
                 DataModel model = DataModel.getInstance();
                 if (poi.getPhoto() != null) // Better for Showcase

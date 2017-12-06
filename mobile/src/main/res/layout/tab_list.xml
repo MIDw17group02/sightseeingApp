@@ -21,5 +21,4 @@
         android:numColumns="auto_fit"
         android:gravity="center" />
 
-
 </android.support.constraint.ConstraintLayout>

@@ -10,11 +10,14 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Created by de on 01.12.2017.
+ *  Central data model class. It stores a sorted(!) ascending list of POIs in terms of their distance to the start coordinates and
+ *  also serves as a LocationListener. When the position changes the models position data gets updated.
+ *  Implemented as Singleton Pattern, such that each Acitivty can access the data in its own lifecycle.
+ *
  */
 public class DataModel implements LocationListener {
 
-    private static DataModel dataModel;
+    private static DataModel dataModel; // Singleton instance
 
     private List<POI> nearbyPOIs;
     private Location lastLocation;
@@ -34,6 +37,11 @@ public class DataModel implements LocationListener {
         return dataModel;
     }
 
+    /**
+     * Add a POI to the model.
+     * This function performs a check if the poi is already included.
+     * @param poi
+     */
     public void addPOI(POI poi) {
         if (poi != null && !nearbyPOIs.contains(poi)) {
             nearbyPOIs.add(poi);
@@ -41,6 +49,11 @@ public class DataModel implements LocationListener {
         }
     }
 
+    /**
+     * Return the POI to a given index.
+     * @param index Position of the POI.
+     * @return      The corresponding POI.
+     */
     public POI getPOI(int index) {
         if (index >= 0 && index < nearbyPOIs.size()) {
             return nearbyPOIs.get(index);
@@ -48,6 +61,10 @@ public class DataModel implements LocationListener {
         return null;
     }
 
+    /**
+     * Return a list of all POIs that have the select flag set.
+     * @return A sub list of selected POIs.
+     */
     public List<POI> getSelectedPOIs() {
 
         List<POI> selectedPOIs = new ArrayList<>();
@@ -65,10 +82,18 @@ public class DataModel implements LocationListener {
         return nearbyPOIs;
     }
 
+    /**
+     * Return the number of POIs stored in the model.
+     * @return #POIs
+     */
     public int getPOIcount() {
         return nearbyPOIs.size();
     }
 
+    /**
+     * Return the last known location.
+     * @return Last known location.
+     */
     public Location getLastLocation() {
         return lastLocation;
     }
