@@ -29,5 +29,6 @@
 
     <string name="tab_text_1">Liste</string>
     <string name="tab_text_2">Karte</string>
+    <string name="title_activity_test_watch_sending">TestWatchSending</string>
 
 </resources>

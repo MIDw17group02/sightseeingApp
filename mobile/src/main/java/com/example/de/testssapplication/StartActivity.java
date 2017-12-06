@@ -1,9 +1,8 @@
 package com.example.de.testssapplication;
 
 import android.content.Intent;
-import android.content.res.Configuration;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 
@@ -22,6 +21,8 @@ public class StartActivity extends AppCompatActivity {
             public void onClick(View view) {
                 finish();
                 Intent i = new Intent(getApplicationContext(), ConfigurationActivity.class);
+                //For Testing Watch Sender/Receiver
+                //Intent i = new Intent(getApplicationContext(), TestWatchSending.class);
                 startActivity(i);
             }
         });
