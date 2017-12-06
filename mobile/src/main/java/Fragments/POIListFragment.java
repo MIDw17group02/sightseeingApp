@@ -22,9 +22,10 @@ import model.DataModel;
 import model.POI;
 
 /**
- * Created by de on 02.12.2017.
+ * This fragment refers to the List Tab in the POI Selection Activity.
+ * It basically implements a Adapter that wraps the POIs of the DataModel single instance.
+ * The Adapter is used for displayment of the data in the GridView of the fragment.
  */
-
 public class POIListFragment extends Fragment {
 
     DataModel model;
@@ -38,6 +39,7 @@ public class POIListFragment extends Fragment {
         final POIGridAdapter poiAdapter = new POIGridAdapter();
         gridView.setAdapter(poiAdapter);
 
+        // React to user clicks on a POI.
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView parent, View view, int position, long id) {
@@ -92,8 +94,8 @@ public class POIListFragment extends Fragment {
                 poiTextView.setText(poi.getName());
             }
             double distance = poi.getDistanceToStart();
-            if (distance >= 0.0) {
-                if (distance < 1.0) {
+            if (distance >= 0.0) { // Check if the distance is stored in the object.
+                if (distance < 1.0) { // Check for the used unit.
                     poiTextDistance.setText(String.valueOf((int) (distance*1000.0)) + " m");
                 } else {
                     DecimalFormat df = new DecimalFormat("#.##");
@@ -102,16 +104,19 @@ public class POIListFragment extends Fragment {
             }
 
             Bitmap bm = poi.getPhoto();
-            if (bm == null) {
+            if (bm == null) { // Use a default Image if the Bitmap is empty.
                 bm = BitmapFactory.decodeResource(getResources(), R.drawable.no_image);
             }
             int width = (int) getResources().getDimension(R.dimen.grid_poi_element_width);
             int textSize = (int) getResources().getDimension(R.dimen.grid_poi_element_textSize);
+            // Scale the Bitmap size.
             bm = Bitmap.createScaledBitmap(bm, width, (width - 3 * textSize), false);
             poiImageView.setImageBitmap(bm);
+            // Leave a padding at the top for displayment of the POI name.
             poiImageView.setPadding(0,textSize+6,0,0);
 
             if (poi.isSelected()) {
+                // If the user selected a poi, send draw a green border around it.
                 v.setBackgroundResource(R.layout.grid_poi_shape);
             } else {
                 v.setBackground(null);

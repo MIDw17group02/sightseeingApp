@@ -6,6 +6,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 
+/**
+ * This is a very simple Activity which just displays a title screen and
+ * fires up a new Configuration Activity if its button is clicked.
+ */
 public class StartActivity extends AppCompatActivity {
 
     private Button startTour;
