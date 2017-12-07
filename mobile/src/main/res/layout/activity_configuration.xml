@@ -24,7 +24,7 @@
                 android:id="@+id/label_roundtour"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="110dp"
+                android:layout_marginRight="140dp"
                 android:textSize="@dimen/configuration_activity_text_size"
                 android:text="@string/roundLabel" />
 
@@ -49,7 +49,7 @@
             <TextView
                 android:id="@+id/label_duration"
                 android:layout_width="wrap_content"
-                android:layout_marginRight="160dp"
+                android:layout_marginRight="180dp"
                 android:textSize="@dimen/configuration_activity_text_size"
                 android:layout_height="wrap_content"
                 android:text="@string/durationLabel" />
@@ -86,7 +86,7 @@
                 android:id="@+id/label_distance"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="146dp"
+                android:layout_marginRight="166dp"
                 android:textSize="@dimen/configuration_activity_text_size"
                 android:text="@string/distanceLabel" />
 
