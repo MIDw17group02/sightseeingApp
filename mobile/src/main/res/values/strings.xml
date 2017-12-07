@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">SightSeeingApplication</string>
     <string name="google_maps_key">AIzaSyDzw47QwwNwNM2kFne6KsviyP5bv1SyDak</string>
+    <!--<string name="google_maps_key">AIzaSyBHt-nxSl5JUabLPUeOmOutThpt5CmxhVU</string>-->
 
     <string name="title_activity_start">StartActivity</string>
     <string name="title_activity_configuration">Kriterien</string>
@@ -30,5 +31,9 @@
     <string name="tab_text_1">Liste</string>
     <string name="tab_text_2">Karte</string>
     <string name="title_activity_test_watch_sending">TestWatchSending</string>
+
+    <string name="yelp_client_id">xKC6YmV-Ols2rTPbR5xzyg</string>
+    <string name="yelp_client_secret">z7p726NnspPBvAjEM98fDEBzpd5DuTrxzHmfAGQPzdBVGmzO0JcZWqQxxugq7U4K</string>
+    <string name="option_get_place">Get POIs</string>
 
 </resources>
