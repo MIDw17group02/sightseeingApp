@@ -94,17 +94,6 @@ public class ConfigurationActivity extends AppCompatActivity {
         });
 
         switchRound = (Switch) findViewById(R.id.switch_roundtour);
-        switchRound.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (b) {
-                    switchRound.setText(getString(R.string.roundOn));
-                } else {
-                    switchRound.setText(getString(R.string.roundOff));
-                }
-            }
-        });
-
     }
 
     @SuppressLint("MissingPermission")

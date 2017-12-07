@@ -15,8 +15,8 @@
     <string name="roundLabel">Rundgang</string>
     <string name="distanceLabel">Distanz</string>
     <string name="durationLabel">Dauer</string>
-    <string name="roundOn">An\ \ \ </string>
-    <string name="roundOff">Aus\ \ </string>
+    <string name="roundOn">An</string>
+    <string name="roundOff">Aus</string>
     <string name="continueStr">weiter</string>
     <string name="ok">OK</string>
     <string name="loading_pois">Lade Sehenswürdigkeiten...</string>
