@@ -90,7 +90,7 @@ public class POIFetcher {
 
                 DataModel model = DataModel.getInstance();
                 if (poi.getPhoto() != null) // Better for Showcase
-                model.addPOI(poi);
+                    model.addPOI(poi);
             }
 
         } catch (JSONException e) {

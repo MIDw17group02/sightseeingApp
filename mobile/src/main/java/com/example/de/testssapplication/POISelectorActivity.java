@@ -1,6 +1,8 @@
 package com.example.de.testssapplication;
 
 import android.content.Intent;
+import android.location.Location;
+import android.os.AsyncTask;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -12,7 +14,12 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 import Fragments.POIListFragment;
 import Fragments.POIMapFragment;
@@ -23,6 +30,9 @@ public class POISelectorActivity extends AppCompatActivity {
 
     private SectionsPagerAdapter mSectionsPagerAdapter; // The {@link android.support.v4.view.PagerAdapter} that will provide fragments for each of the sections.
     private ViewPager mViewPager; // The {@link ViewPager} that will host the section contents.
+    private DataModel model;
+    private FusedLocationProviderClient mFusedLocationClient;
+    private Location currentLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +66,10 @@ public class POISelectorActivity extends AppCompatActivity {
                 startActivity(i);
             }
         });
+        model = DataModel.getInstance();
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        new GetCurrentLocationTask().execute();
+
 
     }
 
@@ -83,6 +97,32 @@ public class POISelectorActivity extends AppCompatActivity {
         @Override
         public int getCount() {
             return 2;
+        }
+    }
+
+    private class GetCurrentLocationTask extends AsyncTask<Void, Void, Location> {
+
+        @Override
+        protected Location doInBackground(Void... voids) {
+            mFusedLocationClient.getLastLocation()
+                    .addOnSuccessListener(POISelectorActivity.this, new OnSuccessListener<Location>() {
+                        @Override
+                        public void onSuccess(Location location) {
+                            // Got last known location. In some rare situations this can be null.
+                            if (location != null) {
+                                currentLocation = location;
+                            }
+                        }
+                    });
+            return currentLocation;
+        }
+
+        @Override
+        protected void onPostExecute(Location location) {
+            if (location != null)
+                model.setLastKnownLocation(location);
+            else
+                new GetCurrentLocationTask().execute();
         }
     }
 }
