@@ -1,4 +1,4 @@
-# sightseeingApp
+# NiceTours
 
 This Android Application is developed for the 'Mobile Interaction Design Labor' winter term 17/18.
 This learning module is taking place at the Leibniz University of Hanover.
