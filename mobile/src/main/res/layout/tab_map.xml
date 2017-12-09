@@ -5,11 +5,11 @@
     android:layout_height="match_parent"
     tools:context="com.example.de.testssapplication.POISelectorActivity">
 
-    <com.google.android.gms.maps.MapView
-        android:id="@+id/staticMapView"
+    <fragment
+        android:id="@+id/staticMap"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-    </com.google.android.gms.maps.MapView>
+        android:layout_height="match_parent" />
 
 </android.support.constraint.ConstraintLayout>
+

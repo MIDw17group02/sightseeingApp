@@ -1,5 +1,6 @@
 package com.example.de.testssapplication;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.location.Location;
 import android.os.AsyncTask;
@@ -15,6 +16,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
 import android.view.View;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -74,6 +76,17 @@ public class POISelectorActivity extends AppCompatActivity {
     }
 
     /**
+     * Sets up the options menu.
+     * @param menu The options menu.
+     * @return Boolean.
+     */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.current_place_menu, menu);
+        return true;
+    }
+
+    /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
      */
@@ -90,7 +103,10 @@ public class POISelectorActivity extends AppCompatActivity {
             if (position == 0) {
                 return new POIListFragment();
             } else {
-                return new POIMapFragment();
+                POIMapFragment mapFragment = new POIMapFragment().newInstance();
+                mapFragment.setModel(model);
+                mapFragment.setParent(POISelectorActivity.this);
+                return mapFragment;
             }
         }
 
@@ -102,6 +118,7 @@ public class POISelectorActivity extends AppCompatActivity {
 
     private class GetCurrentLocationTask extends AsyncTask<Void, Void, Location> {
 
+        @SuppressLint("MissingPermission")
         @Override
         protected Location doInBackground(Void... voids) {
             mFusedLocationClient.getLastLocation()
