@@ -2,4 +2,5 @@
     <string name="app_name">TestSSApplication</string>
     <string name="title_activity_poinotifier">POINotifier</string>
     <string name="title_activity_direction_notifier">DirectionNotifier</string>
+    <string name="title_activity_main">MainActivity</string>
 </resources>

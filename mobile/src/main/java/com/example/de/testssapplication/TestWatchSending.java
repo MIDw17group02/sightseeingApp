@@ -33,11 +33,13 @@ import network.WatchNotifier;
 public class TestWatchSending extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, DataApi.DataListener {
 
     //Log-Tag
-    public static String TAG = "TestWatch";
+    public static String TAG = "Phone-TestWatch";
 
     //DataApi-Variables
     private GoogleApiClient mGoogleApiClient;
     private String watchId = "";
+    private WatchNotifier wn;
+
     private static final String DATA_PATH = "/watch_data";
     private static final String OPEN_NAV_CMD = "open-nav-app";
     private static final String OPEN_INFO_CMD = "open-info-app";
@@ -61,7 +63,6 @@ public class TestWatchSending extends AppCompatActivity implements GoogleApiClie
 
         dirButton = (Button) findViewById(R.id.direction);
         poiButton = (Button) findViewById(R.id.poi);
-
         //Node-ID der Uhr suchen (momentan basierend auf dem Namen)
         Log.d(TAG, "Searching for connected Devices ...");
         Wearable.NodeApi.getConnectedNodes(mGoogleApiClient).setResultCallback(new ResultCallback<NodeApi.GetConnectedNodesResult>() {
@@ -78,12 +79,18 @@ public class TestWatchSending extends AppCompatActivity implements GoogleApiClie
                 }
             }
         });
+        //class for sending
+        wn = new WatchNotifier(mGoogleApiClient, watchId);
 
-        dirButton.setOnClickListener(new Button.OnClickListener() {
+        poiButton.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String name = "Heldenstatue";
-                String info = "Sie wurde 1545 in ...";
+                String info = "Das Hermannsdenkmal ist eine Kolossalstatue in der Nähe von Hiddesen südwestlich von Detmold in Nordrhein-Westfalen im südlichen Teutoburger Wald. Es wurde zwischen 1838 und 1875 nach Entwürfen von Ernst von Bandel erbaut und am 16. August 1875 eingeweiht.\n" +
+                        "\n" +
+                        "Das Denkmal soll an den Cheruskerfürsten Arminius erinnern, insbesondere an die sogenannte Schlacht im Teutoburger Wald, in der germanische Stämme unter seiner Führung den drei römischen Legionen XVII, XVIII und XIX unter Publius Quinctilius Varus im Jahre 9 eine entscheidende Niederlage beibrachten.\n" +
+                        "\n" +
+                        "Mit einer Figurhöhe von 26,57 Metern und einer Gesamthöhe von 53,46 Metern ist es die höchste Statue Deutschlands und war von 1875 bis zur Erbauung der Freiheitsstatue 1886 die höchste Statue der westlichen Welt.";
                 String url = "http://vignette3.wikia.nocookie.net/goanimate-v2/images/7/77/Mrhappy0902_468x442.jpg";
                 Bitmap bitmap = null;
                 try {
@@ -93,19 +100,15 @@ public class TestWatchSending extends AppCompatActivity implements GoogleApiClie
                 } catch (ExecutionException e) {
                     e.printStackTrace();
                 }
-
-                WatchNotifier wn = new WatchNotifier(mGoogleApiClient, watchId);
                 wn.sendInfoData(bitmap, name, info);
             }
         });
 
-        poiButton.setOnClickListener(new Button.OnClickListener() {
+        dirButton.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String direction = "rechts";
                 String distance = "100m";
-
-                WatchNotifier wn = new WatchNotifier(mGoogleApiClient, watchId);
                 wn.sendNavData(direction, distance);
             }
         });
