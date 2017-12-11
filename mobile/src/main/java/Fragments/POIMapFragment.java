@@ -226,7 +226,7 @@ public class POIMapFragment extends Fragment implements OnMapReadyCallback,
                 locationResult.addOnCompleteListener(parent, new OnCompleteListener<Location>() {
                     @Override
                     public void onComplete(@NonNull Task<Location> task) {
-                        if (task.isSuccessful()) {
+                        if (task.isSuccessful() && mLastKnownLocation != null) {
                             // Set the map's camera position to the current location of the device.
                             mLastKnownLocation = task.getResult();
                             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
