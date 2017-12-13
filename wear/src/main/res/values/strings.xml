@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">TestSSApplication</string>
+    <string name="app_name">NiceTours</string>
     <string name="title_activity_poinotifier">POINotifier</string>
     <string name="title_activity_direction_notifier">DirectionNotifier</string>
     <string name="title_activity_main">MainActivity</string>
