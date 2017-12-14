@@ -21,11 +21,13 @@ public class DataModel implements LocationListener {
     private static DataModel dataModel; // Singleton instance
     private GoogleApiClient mGoogleApiClient;
 
+    private TourConfiguration tourConfiguration;
+
     private List<POI> nearbyPOIs;
     private Location lastLocation;
 
-
     private DataModel() {
+        tourConfiguration = new TourConfiguration();
         nearbyPOIs = new ArrayList<>();
     }
 
@@ -151,5 +153,12 @@ public class DataModel implements LocationListener {
 
     }
 
+    public TourConfiguration getTourConfiguration() {
+        return tourConfiguration;
+    }
+
+    public void setTourConfiguration(TourConfiguration tourConfiguration) {
+        this.tourConfiguration = tourConfiguration;
+    }
 
 }

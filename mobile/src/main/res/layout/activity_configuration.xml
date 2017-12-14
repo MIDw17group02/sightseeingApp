@@ -33,10 +33,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:maxLines="1"
-                android:switchPadding="12dp"
-                android:textSize="@dimen/configuration_activity_text_size"
-                android:textOff="@string/roundOff"
-                android:textOn="@string/roundOn" />
+                android:switchPadding="20dp"
+                android:textSize="@dimen/configuration_activity_text_size" />
         </LinearLayout>
 
 
@@ -56,23 +54,12 @@
                 android:layout_height="wrap_content"
                 android:text="@string/durationLabel" />
 
-            <EditText
-                android:id="@+id/edit_text_duration"
-                android:layout_width="40dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:gravity="right"
-                android:inputType="numberDecimal"
-                android:lines="1"
-                android:textSize="@dimen/configuration_activity_text_size"
-                android:text="1.0" />
-
-            <TextView
+            <Spinner
+                android:id="@+id/spinner_duration"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/configuration_activity_text_size"
-                android:maxLines="1"
-                android:text="h" />
+                android:textSize="@dimen/configuration_activity_text_size">
+            </Spinner>
 
         </LinearLayout>
 
@@ -92,23 +79,13 @@
                 android:textSize="@dimen/configuration_activity_text_size"
                 android:text="@string/distanceLabel" />
 
-            <EditText
-                android:id="@+id/edit_text_distance"
-                android:layout_width="40dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:gravity="right"
-                android:inputType="numberDecimal"
-                android:textSize="@dimen/configuration_activity_text_size"
-                android:lines="1"
-                android:text="2.0" />
-
-            <TextView
+            <Spinner
+                android:id="@+id/spinner_distance"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/configuration_activity_text_size"
-                android:maxLines="1"
-                android:text="km"/>
+                android:textSize="@dimen/configuration_activity_text_size">
+            </Spinner>
+
         </LinearLayout>
 
     </LinearLayout>
