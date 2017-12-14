@@ -6,4 +6,5 @@
     android:layout_height="wrap_content"
     android:ellipsize="marquee"
     android:singleLine="true"
+    android:textColor="#000000"
     android:textSize="@dimen/configuration_activity_text_size"/>

@@ -17,6 +17,8 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.InputStream;
 
+import okhttp3.Call;
+import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -125,8 +127,9 @@ public class POIFetcher {
                         Log.d("POIFetcher", model.toString());
                         model.addPOI(poi);
                     }
+                } catch(Exception e) {
+                    e.printStackTrace();
                 }
-
             }
         });*/
     }
