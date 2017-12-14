@@ -1,6 +1,5 @@
 package Fragments;
 
-import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
@@ -8,15 +7,14 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.de.testssapplication.POISelectorActivity;
 import com.example.de.testssapplication.R;
@@ -24,15 +22,12 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.places.GeoDataClient;
-import com.google.android.gms.location.places.PlaceDetectionClient;
-import com.google.android.gms.location.places.PlaceLikelihood;
-import com.google.android.gms.location.places.PlaceLikelihoodBufferResponse;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -40,13 +35,16 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
+import java.util.List;
+
 import model.DataModel;
+import model.POI;
 
 /**
  * Created by de on 02.12.2017.
  */
 
-public class POIMapFragment extends Fragment implements OnMapReadyCallback,
+public class POIMapFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
 
@@ -55,13 +53,8 @@ public class POIMapFragment extends Fragment implements OnMapReadyCallback,
 
     private static final String TAG = POIMapFragment.class.getSimpleName();
     private GoogleMap mMap;
-    private CameraPosition mCameraPosition;
     private static final String KEY_CAMERA_POSITION = "camera_position";
     private static final String KEY_LOCATION = "location";
-
-    // The entry points to the Places API.
-    private GeoDataClient mGeoDataClient;
-    private PlaceDetectionClient mPlaceDetectionClient;
 
     // The entry point to the Fused Location Provider.
     private FusedLocationProviderClient mFusedLocationProviderClient;
@@ -75,13 +68,6 @@ public class POIMapFragment extends Fragment implements OnMapReadyCallback,
     // The geographical location where the device is currently located. That is, the last-known
     // location retrieved by the Fused Location Provider.
     private Location mLastKnownLocation;
-
-    // Used for selecting the current place.
-    private static final int M_MAX_ENTRIES = 5;
-    private String[] mLikelyPlaceNames;
-    private String[] mLikelyPlaceAddresses;
-    private String[] mLikelyPlaceAttributions;
-    private LatLng[] mLikelyPlaceLatLngs;
 
     public POIMapFragment() {
     }
@@ -103,12 +89,6 @@ public class POIMapFragment extends Fragment implements OnMapReadyCallback,
         // Using the same map as the dynamic map where the route will be shown later.
         View rootView = inflater.inflate(R.layout.activity_map, viewGroup, false);
 
-        // Construct a GeoDataClient.
-        mGeoDataClient = Places.getGeoDataClient(parent, null);
-
-        // Construct a PlaceDetectionClient.
-        mPlaceDetectionClient = Places.getPlaceDetectionClient(parent, null);
-
         // Construct a FusedLocationProviderClient.
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(parent);
 
@@ -124,9 +104,10 @@ public class POIMapFragment extends Fragment implements OnMapReadyCallback,
         mapFragment.getMapAsync(this);
 
         */
+
         if (savedInstanceState != null) {
             mLastKnownLocation = savedInstanceState.getParcelable(KEY_LOCATION);
-            mCameraPosition = savedInstanceState.getParcelable(KEY_CAMERA_POSITION);
+            CameraPosition mCameraPosition = savedInstanceState.getParcelable(KEY_CAMERA_POSITION);
 
         }
 
@@ -139,6 +120,10 @@ public class POIMapFragment extends Fragment implements OnMapReadyCallback,
                 .addApi(Places.PLACE_DETECTION_API)
                 .build();
         mGoogleApiClient.connect();
+
+        model = DataModel.getInstance();
+
+        if (mMap != null) updateMarkers();
 
         return rootView;
     }
@@ -156,25 +141,16 @@ public class POIMapFragment extends Fragment implements OnMapReadyCallback,
     }
 
     /**
-     * Handles a click on the menu option to get a place.
-     * @param item The menu item to handle.
-     * @return Boolean.
-     */
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.option_get_place) {
-            showCurrentPlace();
-        }
-        return true;
-    }
-
-    /**
      * Manipulates the map when it's available.
      * This callback is triggered when the map is ready to be used.
      */
     @Override
     public void onMapReady(GoogleMap map) {
         mMap = map;
+
+        updateMarkers();
+
+        mMap.setOnMarkerClickListener(this);
 
         // Use a custom info window adapter to handle multiple lines of text in the
         // info window contents.
@@ -269,6 +245,26 @@ public class POIMapFragment extends Fragment implements OnMapReadyCallback,
     }
 
     /**
+     * Updates the markers shown on the map.
+     * Green markers are selected POIs while red markers are unselected POIs.
+     */
+
+    private void updateMarkers() {
+
+        mMap.clear();
+
+        List<POI> poiList = model.getNearbyPOIs();
+
+        for (POI poi : poiList) {
+            Marker mPOI = mMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(poi.getLatitude(), poi.getLongitude()))
+                    .title(poi.getName()));
+            if (poi.isSelected()) mPOI.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+            else mPOI.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+        }
+    }
+
+    /**
      * Handles the result of the request for location permissions.
      */
     @Override
@@ -286,119 +282,6 @@ public class POIMapFragment extends Fragment implements OnMapReadyCallback,
             }
         }
         updateLocationUI();
-    }
-
-    /**
-     * Prompts the user to select the current place from a list of likely places, and shows the
-     * current place on the map - provided the user has granted location permission.
-     */
-    private void showCurrentPlace() {
-        if (mMap == null) {
-            return;
-        }
-
-        if (mLocationPermissionGranted) {
-            // Get the likely places - that is, the businesses and other points of interest that
-            // are the best match for the device's current location.
-            @SuppressWarnings("MissingPermission") final
-            Task<PlaceLikelihoodBufferResponse> placeResult =
-                    mPlaceDetectionClient.getCurrentPlace(null);
-            placeResult.addOnCompleteListener
-                    (new OnCompleteListener<PlaceLikelihoodBufferResponse>() {
-                        @Override
-                        public void onComplete(@NonNull Task<PlaceLikelihoodBufferResponse> task) {
-                            if (task.isSuccessful() && task.getResult() != null) {
-                                PlaceLikelihoodBufferResponse likelyPlaces = task.getResult();
-
-                                // Set the count, handling cases where less than 5 entries are returned.
-                                int count;
-                                if (likelyPlaces.getCount() < M_MAX_ENTRIES) {
-                                    count = likelyPlaces.getCount();
-                                } else {
-                                    count = M_MAX_ENTRIES;
-                                }
-
-                                int i = 0;
-                                mLikelyPlaceNames = new String[count];
-                                mLikelyPlaceAddresses = new String[count];
-                                mLikelyPlaceAttributions = new String[count];
-                                mLikelyPlaceLatLngs = new LatLng[count];
-
-                                for (PlaceLikelihood placeLikelihood : likelyPlaces) {
-                                    // Build a list of likely places to show the user.
-                                    mLikelyPlaceNames[i] = (String) placeLikelihood.getPlace().getName();
-                                    mLikelyPlaceAddresses[i] = (String) placeLikelihood.getPlace()
-                                            .getAddress();
-                                    mLikelyPlaceAttributions[i] = (String) placeLikelihood.getPlace()
-                                            .getAttributions();
-                                    mLikelyPlaceLatLngs[i] = placeLikelihood.getPlace().getLatLng();
-
-                                    i++;
-                                    if (i > (count - 1)) {
-                                        break;
-                                    }
-                                }
-
-                                // Release the place likelihood buffer, to avoid memory leaks.
-                                likelyPlaces.release();
-
-                                // Show a dialog offering the user the list of likely places, and add a
-                                // marker at the selected place.
-                                openPlacesDialog();
-
-                            } else {
-                                Log.e(TAG, "Exception: %s", task.getException());
-                            }
-                        }
-                    });
-        } else {
-            // The user has not granted permission.
-            Log.i(TAG, "The user did not grant location permission.");
-
-            // Add a default marker, because the user hasn't selected a place.
-            mMap.addMarker(new MarkerOptions()
-                    .title(getString(R.string.default_info_title))
-                    .position(mDefaultLocation)
-                    .snippet(getString(R.string.default_info_snippet)));
-
-            // Prompt the user for permission.
-            getLocationPermission();
-        }
-    }
-
-    /**
-     * Displays a form allowing the user to select a place from a list of likely places.
-     */
-    private void openPlacesDialog() {
-        // Ask the user to choose the place where they are now.
-        DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // The "which" argument contains the position of the selected item.
-                LatLng markerLatLng = mLikelyPlaceLatLngs[which];
-                String markerSnippet = mLikelyPlaceAddresses[which];
-                if (mLikelyPlaceAttributions[which] != null) {
-                    markerSnippet = markerSnippet + "\n" + mLikelyPlaceAttributions[which];
-                }
-
-                // Add a marker for the selected place, with an info window
-                // showing information about that place.
-                mMap.addMarker(new MarkerOptions()
-                        .title(mLikelyPlaceNames[which])
-                        .position(markerLatLng)
-                        .snippet(markerSnippet));
-
-                // Position the map's camera at the location of the marker.
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(markerLatLng,
-                        DEFAULT_ZOOM));
-            }
-        };
-
-        // Display the dialog.
-        android.support.v7.app.AlertDialog dialog = new android.support.v7.app.AlertDialog.Builder(parent)
-                .setTitle(R.string.pick_place)
-                .setItems(mLikelyPlaceNames, listener)
-                .show();
     }
 
     /**
@@ -441,20 +324,23 @@ public class POIMapFragment extends Fragment implements OnMapReadyCallback,
 
     }
 
-    public void setModel(DataModel model) {
-        this.model = model;
-    }
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        //TODO: find selected POI from marker click
+        for (POI poi : model.getNearbyPOIs()) {
+            if (poi.getName() == marker.getTitle()) {
+                poi.setSelected(!poi.isSelected());
+                break;
+            }
+        }
+        Toast.makeText(parent, marker.getTitle(), Toast.LENGTH_SHORT).show();
+        updateMarkers();
 
-    public DataModel getModel() {
-        return model;
+        return false;
     }
 
     public void setParent (POISelectorActivity parent) {
         this.parent = parent;
-    }
-
-    public POISelectorActivity getParent() {
-        return parent;
     }
 
 }

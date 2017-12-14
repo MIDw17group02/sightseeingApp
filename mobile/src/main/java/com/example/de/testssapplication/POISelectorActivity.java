@@ -76,17 +76,6 @@ public class POISelectorActivity extends AppCompatActivity {
     }
 
     /**
-     * Sets up the options menu.
-     * @param menu The options menu.
-     * @return Boolean.
-     */
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.current_place_menu, menu);
-        return true;
-    }
-
-    /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
      */
@@ -103,8 +92,7 @@ public class POISelectorActivity extends AppCompatActivity {
             if (position == 0) {
                 return new POIListFragment();
             } else {
-                POIMapFragment mapFragment = new POIMapFragment().newInstance();
-                mapFragment.setModel(model);
+                POIMapFragment mapFragment = new POIMapFragment();
                 mapFragment.setParent(POISelectorActivity.this);
                 return mapFragment;
             }
