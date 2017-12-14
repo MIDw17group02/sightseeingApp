@@ -5,6 +5,8 @@ import android.location.LocationListener;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.google.android.gms.common.api.GoogleApiClient;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -17,9 +19,11 @@ import java.util.List;
 public class DataModel implements LocationListener {
 
     private static DataModel dataModel; // Singleton instance
+    private GoogleApiClient mGoogleApiClient;
 
     private List<POI> nearbyPOIs;
     private Location lastLocation;
+
 
     private DataModel() {
         nearbyPOIs = new ArrayList<>();
@@ -118,6 +122,14 @@ public class DataModel implements LocationListener {
         return lastLocation;
     }
 
+    public GoogleApiClient getGoogleApiClient() {
+        return mGoogleApiClient;
+    }
+
+    public void setGoogleApiClient(GoogleApiClient mGoogleApiClient) {
+        this.mGoogleApiClient = mGoogleApiClient;
+    }
+
     @Override
     public void onLocationChanged(Location location) {
         Log.d(getClass().toString(), "Got new location " + location.toString());
@@ -138,4 +150,6 @@ public class DataModel implements LocationListener {
     public void onProviderDisabled(String s) {
 
     }
+
+
 }

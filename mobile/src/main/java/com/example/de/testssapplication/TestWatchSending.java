@@ -80,7 +80,8 @@ public class TestWatchSending extends AppCompatActivity implements GoogleApiClie
             }
         });
         //class for sending
-        wn = new WatchNotifier(mGoogleApiClient, watchId);
+        WatchNotifier.setGoogleApiClient(mGoogleApiClient);
+        WatchNotifier.setWatchId(watchId);
 
         poiButton.setOnClickListener(new Button.OnClickListener() {
             @Override
@@ -100,7 +101,7 @@ public class TestWatchSending extends AppCompatActivity implements GoogleApiClie
                 } catch (ExecutionException e) {
                     e.printStackTrace();
                 }
-                wn.sendInfoData(bitmap, name, info);
+                WatchNotifier.sendInfoData(bitmap, name, info);
             }
         });
 
@@ -109,7 +110,7 @@ public class TestWatchSending extends AppCompatActivity implements GoogleApiClie
             public void onClick(View view) {
                 String direction = "rechts";
                 String distance = "100m";
-                wn.sendNavData(direction, distance);
+                WatchNotifier.sendNavData(direction, distance);
             }
         });
     }

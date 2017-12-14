@@ -7,32 +7,38 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.location.LocationManager;
-import android.os.AsyncTask;
+import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Switch;
-import android.location.Location;
 
-
-import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.location.places.Places;
+import com.google.android.gms.wearable.Node;
+import com.google.android.gms.wearable.NodeApi;
+import com.google.android.gms.wearable.Wearable;
 
 import model.DataModel;
 import network.POIFetcher;
+import network.WatchNotifier;
 
-public class ConfigurationActivity extends AppCompatActivity {
+public class ConfigurationActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks {
+    //Log-Tag
+    public static String TAG = "Phone-Configuration";
 
     private Button selectPOIs;
     private Switch switchRound;
@@ -44,6 +50,9 @@ public class ConfigurationActivity extends AppCompatActivity {
     final int location_permission_request = 1;
     private DataModel model;
     private Location currentLocation = null;
+
+    //watchID for watchConnectin
+    private String watchId = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,7 +130,37 @@ public class ConfigurationActivity extends AppCompatActivity {
         });
 
 
+        //GoogleApiClient hinzufügen
+        GoogleApiClient mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this /* FragmentActivity */,
+                        this /* OnConnectionFailedListener */)
+                .addConnectionCallbacks(this)
+                .addApi(LocationServices.API)
+                .addApi(Places.GEO_DATA_API)
+                .addApi(Places.PLACE_DETECTION_API)
+                .addApi(Wearable.API)
+                .build();
+        mGoogleApiClient.connect();
+        model.setGoogleApiClient(mGoogleApiClient);
+        //Node-ID der Uhr suchen (momentan basierend auf dem Namen)
+        Log.d(TAG, "Searching for connected Devices ...");
+        Wearable.NodeApi.getConnectedNodes(mGoogleApiClient).setResultCallback(new ResultCallback<NodeApi.GetConnectedNodesResult>() {
+            @Override
+            public void onResult(NodeApi.GetConnectedNodesResult getConnectedNodesResult) {
 
+                for (Node node : getConnectedNodesResult.getNodes()) {
+                    Log.d(TAG, "ConnectedDevice '"+node.getDisplayName()+"', NodeId = "+node.getId());
+
+                    if( node.getDisplayName().equalsIgnoreCase("Moto 360 26CX")){
+                        watchId = node.getId();
+                        Log.d(TAG,"Watch found and assigned! ("+node.getId()+")");
+                    }
+                }
+            }
+        });
+        //add GoogleClient and WatchID to WatchNotifier
+        WatchNotifier.setGoogleApiClient(mGoogleApiClient);
+        WatchNotifier.setWatchId(watchId);
     }
 
 
@@ -156,4 +195,18 @@ public class ConfigurationActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
 }
