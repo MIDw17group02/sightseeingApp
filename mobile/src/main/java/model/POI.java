@@ -22,6 +22,8 @@ public class POI implements Comparable {
     private String place_id;
     private String reference;
 
+    private int index;
+
     // TODO update this usage by using the location!
     private double distance_to_start = -1.0; // Distance of the POI in kilo meters to the current position.
 
@@ -133,6 +135,10 @@ public class POI implements Comparable {
     public void setReference(String reference) {
         this.reference = reference;
     }
+
+    public void setIndex(int index) {this.index = index;}
+
+    public int getIndex() {return index;}
 
     @Override
     public int compareTo(@NonNull Object o) {

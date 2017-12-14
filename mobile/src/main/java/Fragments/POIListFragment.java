@@ -29,6 +29,7 @@ import model.POI;
 public class POIListFragment extends Fragment {
 
     DataModel model;
+    POIGridAdapter poiAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup viewGroup, Bundle savedInstanceState) {
@@ -36,7 +37,7 @@ public class POIListFragment extends Fragment {
 
         model = DataModel.getInstance();
         final GridView gridView = rootView.findViewById(R.id.poi_grid_list);
-        final POIGridAdapter poiAdapter = new POIGridAdapter();
+        poiAdapter = new POIGridAdapter();
         gridView.setAdapter(poiAdapter);
 
         // React to user clicks on a POI.
@@ -50,6 +51,10 @@ public class POIListFragment extends Fragment {
         });
 
         return rootView;
+    }
+
+    public void notifySelectionChange() {
+        poiAdapter.notifyDataSetChanged();
     }
 
     private class POIGridAdapter extends BaseAdapter {

@@ -26,6 +26,7 @@
     <string name="error_dialog_title">Fehler</string>
     <string name="dialog_no_permissions">Berechtigungen notwendig. Anwendung wird beendet!</string>
     <string name="action_settings">Settings</string>
+    <string name="dialog_no_poi_selected">Bitte mindestens eine Sehenswürdigkeit auswählen!</string>
 
     <string name="section_format">Hello World from section: %1$d</string>
 

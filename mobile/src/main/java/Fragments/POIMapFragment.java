@@ -1,6 +1,9 @@
 package Fragments;
 
+import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -12,7 +15,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,6 +40,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 import model.DataModel;
@@ -249,16 +255,20 @@ public class POIMapFragment extends Fragment implements OnMapReadyCallback, Goog
      * Green markers are selected POIs while red markers are unselected POIs.
      */
 
-    private void updateMarkers() {
+    public void updateMarkers() {
 
         mMap.clear();
 
         List<POI> poiList = model.getNearbyPOIs();
 
-        for (POI poi : poiList) {
+        //for (POI poi : poiList) {
+        for (int i = 0; i < poiList.size(); i++) {
+            POI poi = poiList.get(i);
+            poi.setIndex(i);
             Marker mPOI = mMap.addMarker(new MarkerOptions()
                     .position(new LatLng(poi.getLatitude(), poi.getLongitude()))
                     .title(poi.getName()));
+            mPOI.setTag(i);
             if (poi.isSelected()) mPOI.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
             else mPOI.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
         }
@@ -326,13 +336,10 @@ public class POIMapFragment extends Fragment implements OnMapReadyCallback, Goog
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-        //TODO: find selected POI from marker click
-        for (POI poi : model.getNearbyPOIs()) {
-            if (poi.getName() == marker.getTitle()) {
-                poi.setSelected(!poi.isSelected());
-                break;
-            }
-        }
+
+        POI markerPOI = model.getPOI((int)marker.getTag());
+        markerPOI.setSelected(!markerPOI.isSelected());
+        Log.d("Marker_clicked", "Marker " + marker.getTitle() + "clicked with id " + marker.getId());
         Toast.makeText(parent, marker.getTitle(), Toast.LENGTH_SHORT).show();
         updateMarkers();
 
@@ -342,5 +349,6 @@ public class POIMapFragment extends Fragment implements OnMapReadyCallback, Goog
     public void setParent (POISelectorActivity parent) {
         this.parent = parent;
     }
+
 
 }

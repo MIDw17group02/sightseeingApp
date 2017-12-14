@@ -72,6 +72,12 @@ public class DataModel implements LocationListener {
         return null;
     }
 
+    public void clearPOIs() {
+
+        nearbyPOIs = new ArrayList<POI>();
+
+    }
+
     /**
      * Return a list of all POIs that have the select flag set.
      *

@@ -35,6 +35,8 @@ public class POISelectorActivity extends AppCompatActivity {
     private DataModel model;
     private FusedLocationProviderClient mFusedLocationClient;
     private Location currentLocation;
+    private POIMapFragment mapFragment;
+    private POIListFragment listFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,15 +59,43 @@ public class POISelectorActivity extends AppCompatActivity {
 
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                if (tab.getPosition() == 0) {
+                    if (listFragment != null) {
+                        listFragment.notifySelectionChange();
+                    }
+                }
+                if (tab.getPosition() == 1) {
+                    if (mapFragment != null) {
+                        mapFragment.updateMarkers();
+                    }
+                }
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
-                finish();
-                Intent i = new Intent(getApplicationContext(), MapActivity.class);
-                startActivity(i);
+                if (model.getSelectedPOIs().size() == 0) {
+                    Snackbar.make(view, getString(R.string.dialog_no_poi_selected), Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                } else {
+                    finish();
+                    Intent i = new Intent(getApplicationContext(), MapActivity.class);
+                    startActivity(i);
+                }
             }
         });
         model = DataModel.getInstance();
@@ -90,9 +120,10 @@ public class POISelectorActivity extends AppCompatActivity {
             // getItem is called to instantiate the fragment for the given page.
 
             if (position == 0) {
-                return new POIListFragment();
+                listFragment = new POIListFragment();
+                return listFragment;
             } else {
-                POIMapFragment mapFragment = new POIMapFragment();
+                mapFragment = new POIMapFragment();
                 mapFragment.setParent(POISelectorActivity.this);
                 return mapFragment;
             }

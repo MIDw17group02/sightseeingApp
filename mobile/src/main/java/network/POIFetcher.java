@@ -70,6 +70,7 @@ public class POIFetcher {
         OkHttpClient client = new OkHttpClient();
         final Request request = new Request.Builder().url(poiURL).build();
         Response response = null;
+        DataModel.getInstance().clearPOIs();
 
         try {
             response = client.newCall(request).execute();
