@@ -28,7 +28,6 @@ import java.util.concurrent.TimeUnit;
  * Created by Justin on 06.12.2017.
  */
 public class Receiver extends WearableListenerService {
-
     //Log-Tag
     public static String TAG = "Wear-Receiver";
 
