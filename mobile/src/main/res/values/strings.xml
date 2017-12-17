@@ -7,6 +7,7 @@
     <string name="title_activity_configuration">Kriterien</string>
     <string name="title_activity_poiselector">Sehenswürdigkeiten auswählen</string>
     <string name="title_activity_maps">Karte</string>
+    <string name="title_end_screen">Statistiken</string>
 
     <!--
     This string is used for square devices and overridden by hello_world in
@@ -16,9 +17,11 @@
     <string name="roundLabel">Rundgang</string>
     <string name="distanceLabel">Distanz</string>
     <string name="durationLabel">Dauer</string>
+    <string name="visitedPOIs">Besuchte\nSehenswürdigkeiten</string>
     <string name="roundOn">An</string>
     <string name="roundOff">Aus</string>
     <string name="continueStr">weiter</string>
+    <string name="endStr">Tour abschließen</string>
     <string name="ok">OK</string>
     <string name="yes">Ja</string>
     <string name="no">Nein</string>

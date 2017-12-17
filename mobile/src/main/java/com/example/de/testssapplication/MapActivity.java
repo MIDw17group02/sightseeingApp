@@ -3,6 +3,7 @@ package com.example.de.testssapplication;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
@@ -108,8 +109,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
                     // Finish the App
-                    finishAndRemoveTask();
-                    finishAffinity();
+                    //finishAndRemoveTask();
+                    //finishAffinity();
+                    finish();
+                    Intent intent = new Intent(getApplicationContext(), EndScreenActivity.class);
+                    startActivity(intent);
                 }
             });
             builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
@@ -241,8 +245,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 // Finish the App
-                finishAndRemoveTask();
-                finishAffinity();
+                finish();
+                Intent intent = new Intent(getApplicationContext(), EndScreenActivity.class);
+                startActivity(intent);
             }
         });
         builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
