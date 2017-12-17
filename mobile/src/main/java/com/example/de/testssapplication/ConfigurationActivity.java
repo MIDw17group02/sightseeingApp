@@ -77,13 +77,13 @@ public class ConfigurationActivity extends AppCompatActivity implements GoogleAp
         progressDialog = new ProgressDialog(this);
 
         switchRound = (Switch) findViewById(R.id.switch_roundtour);
-        switchRound.setText(getString(R.string.roundOff));
+        /*switchRound.setText(getString(R.string.roundOff));
         switchRound.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
                 switchRound.setText(checked ? getString(R.string.roundOn) : getString(R.string.roundOff));
             }
-        });
+        });*/
 
         distanceSpinner = (Spinner) findViewById(R.id.spinner_distance);
         final ArrayAdapter<CharSequence> sp_adapter_1 = ArrayAdapter.createFromResource(this, R.array.distance_array, R.layout.double_spinner_item);

@@ -24,7 +24,7 @@
                 android:id="@+id/label_roundtour"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="120dp"
+                android:layout_marginRight="125dp"
                 android:textSize="@dimen/configuration_activity_text_size"
                 android:text="@string/roundLabel" />
 

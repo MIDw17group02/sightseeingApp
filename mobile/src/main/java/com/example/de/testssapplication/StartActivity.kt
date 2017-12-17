@@ -19,7 +19,7 @@ class StartActivity : AppCompatActivity() {
 
         startTour = findViewById(R.id.button)
         startTour!!.setOnClickListener {
-            finish()
+            //finish()
             val i = Intent(applicationContext, ConfigurationActivity::class.java)
             //For Testing Watch Sender/Receiver
             //Intent i = new Intent(getApplicationContext(), TestWatchSending.class);
