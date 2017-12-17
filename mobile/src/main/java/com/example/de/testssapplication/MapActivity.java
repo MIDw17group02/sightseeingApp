@@ -109,6 +109,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 public void onClick(DialogInterface dialogInterface, int i) {
                     // Finish the App
                     finishAndRemoveTask();
+                    finishAffinity();
                 }
             });
             builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
@@ -231,5 +232,29 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         }
     }
 
+    @Override
+    public void onBackPressed() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(R.string.dialog_want_to_exit);
+        builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                // Finish the App
+                finishAndRemoveTask();
+                finishAffinity();
+            }
+        });
+        builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.setCancelable(false);
+        dialog.show();
+    }
 }
 
