@@ -1,6 +1,7 @@
 package Fragments;
 
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -13,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,7 +45,10 @@ import model.POI;
  * Created by de on 02.12.2017.
  */
 
-public class POIMapFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener,
+public class POIMapFragment extends Fragment implements OnMapReadyCallback,
+        /* GoogleMap.OnMarkerClickListener,*/
+        GoogleMap.InfoWindowAdapter,
+        GoogleMap.OnInfoWindowClickListener,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
 
@@ -140,33 +145,12 @@ public class POIMapFragment extends Fragment implements OnMapReadyCallback, Goog
 
         updateMarkers();
 
-        mMap.setOnMarkerClickListener(this);
+       // mMap.setOnMarkerClickListener(this);
 
         // Use a custom info window adapter to handle multiple lines of text in the
         // info window contents.
-        mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
-
-            @Override
-            // Return null here, so that getInfoContents() is called next.
-            public View getInfoWindow(Marker arg0) {
-                return null;
-            }
-
-            @Override
-            public View getInfoContents(Marker marker) {
-                // Inflate the layouts for the info window, title and snippet.
-                View infoWindow = getLayoutInflater().inflate(R.layout.custom_info_contents,
-                        (FrameLayout) parent.findViewById(R.id.map), false);
-
-                TextView title = infoWindow.findViewById(R.id.title);
-                title.setText(marker.getTitle());
-
-                TextView snippet = infoWindow.findViewById(R.id.snippet);
-                snippet.setText(marker.getSnippet());
-
-                return infoWindow;
-            }
-        });
+        mMap.setInfoWindowAdapter(this);
+        mMap.setOnInfoWindowClickListener(this);
 
         // Prompt the user for permission.
         getLocationPermission();
@@ -176,6 +160,34 @@ public class POIMapFragment extends Fragment implements OnMapReadyCallback, Goog
 
         // Get the current location of the device and set the position of the map.
         getDeviceLocation();
+    }
+
+
+    @Override
+    public View getInfoWindow(Marker marker) { return null;}
+
+    @Override
+    public View getInfoContents(Marker marker) {
+        // Inflate the layouts for the info window, title and snippet.
+        View infoWindow = getLayoutInflater().inflate(R.layout.custom_info_contents,
+                (FrameLayout) parent.findViewById(R.id.map), false);
+
+        POI markerPOI = model.getPOI((int)marker.getTag());
+
+        TextView title = infoWindow.findViewById(R.id.title);
+        title.setText(marker.getTitle());
+
+        TextView snippet = infoWindow.findViewById(R.id.snippet);
+        snippet.setText(marker.getSnippet());
+
+        snippet.setTextColor(markerPOI.isSelected() ? Color.GREEN : Color.RED);
+
+        //TODO: add image to info window
+        //ImageView photo = new ImageView();
+        //photo.setImageBitmap(markerPOI.getPhoto());
+        //infoWindow.set
+
+        return infoWindow;
     }
 
     /**
@@ -245,7 +257,6 @@ public class POIMapFragment extends Fragment implements OnMapReadyCallback, Goog
 
         List<POI> poiList = model.getNearbyPOIs();
 
-        //for (POI poi : poiList) {
         for (int i = 0; i < poiList.size(); i++) {
             POI poi = poiList.get(i);
             poi.setIndex(i);
@@ -253,8 +264,14 @@ public class POIMapFragment extends Fragment implements OnMapReadyCallback, Goog
                     .position(new LatLng(poi.getLatitude(), poi.getLongitude()))
                     .title(poi.getName()));
             mPOI.setTag(i);
-            if (poi.isSelected()) mPOI.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-            else mPOI.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+            if (poi.isSelected()) {
+                mPOI.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+                mPOI.setSnippet("Ausgewählt");
+            }
+            else {
+                mPOI.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+                mPOI.setSnippet("Nicht ausgewählt");
+            }
         }
     }
 
@@ -318,21 +335,30 @@ public class POIMapFragment extends Fragment implements OnMapReadyCallback, Goog
 
     }
 
+    /*
     @Override
     public boolean onMarkerClick(Marker marker) {
 
         POI markerPOI = model.getPOI((int)marker.getTag());
         markerPOI.setSelected(!markerPOI.isSelected());
-        Log.d("Marker_clicked", "Marker " + marker.getTitle() + "clicked with id " + marker.getId());
-        Toast.makeText(parent, marker.getTitle(), Toast.LENGTH_SHORT).show();
+        //Toast.makeText(parent, marker.getTitle(), Toast.LENGTH_SHORT).show();
+        marker.showInfoWindow();
         updateMarkers();
 
         return false;
     }
+    */
 
+    @Override
+    public void onInfoWindowClick(Marker marker) {
+
+        POI markerPOI = model.getPOI((int)marker.getTag());
+        markerPOI.setSelected(!markerPOI.isSelected());
+        updateMarkers();
+
+    }
     public void setParent (POISelectorActivity parent) {
         this.parent = parent;
     }
-
 
 }
