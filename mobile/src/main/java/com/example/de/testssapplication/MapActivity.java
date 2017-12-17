@@ -34,7 +34,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.List;
 
+import model.DirectionHelper;
+import model.POI;
 import network.WatchNotifier;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -53,6 +56,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private static final int DEFAULT_ZOOM = 10;
     private Location mLastKnownLocation;
+
+    private DirectionHelper directionHelper;
 
 
     @Override
@@ -78,6 +83,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
         SupportMapFragment map = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         map.getMapAsync(this);
+
     }
 
     //private String access_token;
@@ -143,6 +149,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
         // Get the current location of the device and set the position of the map.
         getDeviceLocation();
+
+        directionHelper = DirectionHelper.getInstance(mMap);
+        List<POI> pois = directionHelper.makeTours();
+        directionHelper.addPolylineDirection(this, pois);
 
     }
 

@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.annotation.NonNull;
@@ -29,8 +30,10 @@ import android.widget.Switch;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Places;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.NodeApi;
 import com.google.android.gms.wearable.Wearable;
@@ -48,7 +51,7 @@ public class ConfigurationActivity extends AppCompatActivity implements GoogleAp
     ProgressDialog progressDialog;
     private Spinner distanceSpinner;
     private Spinner durationSpinner;
-
+    private FusedLocationProviderClient mFusedLocationClient;
     final int location_permission_request = 1;
     private DataModel model;
     private Location currentLocation = null;
@@ -188,6 +191,9 @@ public class ConfigurationActivity extends AppCompatActivity implements GoogleAp
         //add GoogleClient and WatchID to WatchNotifier
         WatchNotifier.setGoogleApiClient(mGoogleApiClient);
         WatchNotifier.setWatchId(watchId);
+
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        new GetCurrentLocationTask().execute();
     }
 
 
@@ -201,6 +207,7 @@ public class ConfigurationActivity extends AppCompatActivity implements GoogleAp
                     // Permissions were granted continue with the app.
                     LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
                     locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 10, model);
+                    new GetCurrentLocationTask().execute();
                 } else {
                     // Permissions were denied. Show dialog and close app.
                     AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -235,5 +242,32 @@ public class ConfigurationActivity extends AppCompatActivity implements GoogleAp
     @Override
     public void onConnectionSuspended(int i) {
 
+    }
+
+    private class GetCurrentLocationTask extends AsyncTask<Void, Void, Location> {
+
+        @SuppressLint("MissingPermission")
+        @Override
+        protected Location doInBackground(Void... voids) {
+            mFusedLocationClient.getLastLocation()
+                    .addOnSuccessListener(ConfigurationActivity.this, new OnSuccessListener<Location>() {
+                        @Override
+                        public void onSuccess(Location location) {
+                            // Got last known location. In some rare situations this can be null.
+                            if (location != null) {
+                                currentLocation = location;
+                            }
+                        }
+                    });
+            return currentLocation;
+        }
+
+        @Override
+        protected void onPostExecute(Location location) {
+            if (location != null)
+                model.setLastKnownLocation(location);
+            else
+                new GetCurrentLocationTask().execute();
+        }
     }
 }

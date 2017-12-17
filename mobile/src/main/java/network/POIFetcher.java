@@ -42,6 +42,7 @@ public class POIFetcher {
         DataModel model = DataModel.getInstance();
         Location location = model.getLastLocation();
         if (location != null) {
+            Log.e("fafafafa","location not null");
             requestPOIs(context, location.getLatitude(), location.getLongitude(), radius);
         }
     }
