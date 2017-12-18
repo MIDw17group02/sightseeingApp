@@ -67,12 +67,22 @@ public class WatchNotifier{
 
     //Schicke Navigations Daten
     public static void sendNavData(String direction, String distance){
+        Log.d(TAG, "Try sending data...");
         PutDataMapRequest putDataMapReq = PutDataMapRequest.create(DATA_PATH);
         putDataMapReq.getDataMap().putString("dir", direction);
         putDataMapReq.getDataMap().putString("dis", distance);
         putDataMapReq.setUrgent();
-
         PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
+
+        Log.d(TAG, "api: " + mGoogleApiClient.toString());
+        Log.d(TAG, "watchID: " + watchId);
+
+        if(mGoogleApiClient == null) {
+            Log.d(TAG, "apiclient == null");
+        }
+        if(watchId == null) {
+            Log.d(TAG, "watchid == null");
+        }
         PendingResult<DataApi.DataItemResult> pendingResult = Wearable.DataApi.putDataItem(mGoogleApiClient, putDataReq);
 
         pendingResult.setResultCallback(new ResultCallback<DataApi.DataItemResult>() {
@@ -82,6 +92,9 @@ public class WatchNotifier{
                     Log.d(TAG, "Data item set: " + result.getDataItem().getUri());
                     //Messeage an Uhr senden (starten der App)
                     Wearable.MessageApi.sendMessage(mGoogleApiClient, watchId, DATA_PATH, OPEN_NAV_CMD.getBytes());
+                }
+                else {
+                    Log.d(TAG, "fail sending Data to watch");
                 }
             }
         });

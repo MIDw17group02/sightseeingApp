@@ -55,6 +55,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
+
+        WatchNotifier.setGoogleApiClient(new GoogleApiHelper(this).getGoogleApiClient());
         String direction = "rechts";
         String distance = "100m";
         WatchNotifier.sendNavData(direction, distance);

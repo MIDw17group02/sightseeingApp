@@ -52,6 +52,7 @@ public class ConfigurationActivity extends AppCompatActivity implements GoogleAp
     private Location currentLocation = null;
 
     //watchID for watchConnectin
+    private GoogleApiClient mGoogleApiClient;
     private String watchId = "";
 
     @Override
@@ -131,7 +132,7 @@ public class ConfigurationActivity extends AppCompatActivity implements GoogleAp
 
 
         //GoogleApiClient hinzufügen
-        GoogleApiClient mGoogleApiClient = new GoogleApiClient.Builder(this)
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .enableAutoManage(this /* FragmentActivity */,
                         this /* OnConnectionFailedListener */)
                 .addConnectionCallbacks(this)
@@ -151,16 +152,17 @@ public class ConfigurationActivity extends AppCompatActivity implements GoogleAp
                 for (Node node : getConnectedNodesResult.getNodes()) {
                     Log.d(TAG, "ConnectedDevice '"+node.getDisplayName()+"', NodeId = "+node.getId());
 
-                    if( node.getDisplayName().equalsIgnoreCase("Moto 360 26CX")){
+                    if( node.getDisplayName().equalsIgnoreCase("Moto 360 22P4")){
                         watchId = node.getId();
                         Log.d(TAG,"Watch found and assigned! ("+node.getId()+")");
+                        //add GoogleClient and WatchID to WatchNotifier
+                        //WatchNotifier.setGoogleApiClient(mGoogleApiClient);
+                        WatchNotifier.setWatchId(watchId);
                     }
                 }
             }
         });
-        //add GoogleClient and WatchID to WatchNotifier
-        WatchNotifier.setGoogleApiClient(mGoogleApiClient);
-        WatchNotifier.setWatchId(watchId);
+
     }
 
 
