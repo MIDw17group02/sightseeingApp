@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.de.testssapplication">
 
-    <uses-sdk tools:overrideLibrary="android.support.wear"/>
+    <uses-sdk tools:overrideLibrary="android.support.wear" />
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -31,13 +31,14 @@
         <activity
             android:name=".TestWatchSending"
             android:label="@string/title_activity_test_watch_sending"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
-        <activity android:name=".MapActivity">
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".MapActivity"></activity>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
+
+        <activity android:name=".EndScreenActivity"></activity>
     </application>
 
 </manifest>

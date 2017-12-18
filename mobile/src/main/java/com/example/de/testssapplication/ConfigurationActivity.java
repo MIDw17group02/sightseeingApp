@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.annotation.NonNull;
@@ -18,16 +19,21 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Switch;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Places;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.NodeApi;
 import com.google.android.gms.wearable.Wearable;
@@ -43,10 +49,9 @@ public class ConfigurationActivity extends AppCompatActivity implements GoogleAp
     private Button selectPOIs;
     private Switch switchRound;
     ProgressDialog progressDialog;
-    private EditText EditTextDistance;
-    private EditText EditTextDuration;
-
-
+    private Spinner distanceSpinner;
+    private Spinner durationSpinner;
+    private FusedLocationProviderClient mFusedLocationClient;
     final int location_permission_request = 1;
     private DataModel model;
     private Location currentLocation = null;
@@ -74,24 +79,62 @@ public class ConfigurationActivity extends AppCompatActivity implements GoogleAp
         setTitle(getString(R.string.title_activity_configuration));
 
         progressDialog = new ProgressDialog(this);
-        EditTextDistance = (EditText) findViewById(R.id.edit_text_distance);
-        EditTextDuration = (EditText) findViewById(R.id.edit_text_duration);
+
+        switchRound = (Switch) findViewById(R.id.switch_roundtour);
+        switchRound.setText(getString(R.string.roundOff));
+        switchRound.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
+                switchRound.setText(checked ? getString(R.string.roundOn) : getString(R.string.roundOff));
+            }
+        });
+
+        distanceSpinner = (Spinner) findViewById(R.id.spinner_distance);
+        final ArrayAdapter<CharSequence> sp_adapter_1 = ArrayAdapter.createFromResource(this, R.array.distance_array, R.layout.double_spinner_item);
+        sp_adapter_1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        distanceSpinner.setAdapter(sp_adapter_1);
+        distanceSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                String distance_str = (String) adapterView.getItemAtPosition(i);
+                distance_str = distance_str.replace(" km", "");
+                model.getTourConfiguration().setDistance(Double.valueOf(distance_str));
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {}
+        });
+        distanceSpinner.setSelection(3);
+
+        durationSpinner = (Spinner) findViewById(R.id.spinner_duration);
+        ArrayAdapter<CharSequence> sp_adapter_2 = ArrayAdapter.createFromResource(this, R.array.duration_array, R.layout.double_spinner_item);
+        sp_adapter_2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        durationSpinner.setAdapter(sp_adapter_2);
+        durationSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                String duration_str = (String) adapterView.getItemAtPosition(i);
+                duration_str = duration_str.replace(" h", "");
+                model.getTourConfiguration().setDistance(Double.valueOf(duration_str));
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {}
+        });
+        durationSpinner.setSelection(1);
 
         selectPOIs = (Button) findViewById(R.id.continueSelectionButton);
         selectPOIs.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                final int radius; // TODO check double value is not empty etc.
+                final int radius;
+                double distance = model.getTourConfiguration().getDistance(); // Distance is in km => *1000
                 if (switchRound.isActivated()) {
-                    radius = (int) (Double.valueOf(EditTextDistance.getText().toString()) * 1000.0 / 2.0);
+                    radius = (int) (distance * 1000.0 / 2.0);
                 } else {
-                    radius = (int) (Double.valueOf(EditTextDistance.getText().toString()) * 1000.0);
+                    radius = (int) (distance * 1000.0);
                 }
-
-                /*if (model.getLastLocation() == null) {
-                    POIFetcher.requestPOIs(getApplicationContext(), radius);
-                }*/
 
                 progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                 progressDialog.setMessage(getString(R.string.loading_pois));
@@ -118,19 +161,6 @@ public class ConfigurationActivity extends AppCompatActivity implements GoogleAp
             }
         });
 
-        switchRound = (Switch) findViewById(R.id.switch_roundtour);
-        switchRound.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (b) {
-                    switchRound.setText(getString(R.string.roundOn));
-                } else {
-                    switchRound.setText(getString(R.string.roundOff));
-                }
-            }
-        });
-
-
         //GoogleApiClient hinzufügen
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .enableAutoManage(this /* FragmentActivity */,
@@ -156,13 +186,15 @@ public class ConfigurationActivity extends AppCompatActivity implements GoogleAp
                         watchId = node.getId();
                         Log.d(TAG,"Watch found and assigned! ("+node.getId()+")");
                         //add GoogleClient and WatchID to WatchNotifier
-                        //WatchNotifier.setGoogleApiClient(mGoogleApiClient);
+                        WatchNotifier.setGoogleApiClient(mGoogleApiClient);
                         WatchNotifier.setWatchId(watchId);
                     }
                 }
             }
         });
 
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        new GetCurrentLocationTask().execute();
     }
 
 
@@ -176,6 +208,7 @@ public class ConfigurationActivity extends AppCompatActivity implements GoogleAp
                     // Permissions were granted continue with the app.
                     LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
                     locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 10, model);
+                    new GetCurrentLocationTask().execute();
                 } else {
                     // Permissions were denied. Show dialog and close app.
                     AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -210,5 +243,32 @@ public class ConfigurationActivity extends AppCompatActivity implements GoogleAp
     @Override
     public void onConnectionSuspended(int i) {
 
+    }
+
+    private class GetCurrentLocationTask extends AsyncTask<Void, Void, Location> {
+
+        @SuppressLint("MissingPermission")
+        @Override
+        protected Location doInBackground(Void... voids) {
+            mFusedLocationClient.getLastLocation()
+                    .addOnSuccessListener(ConfigurationActivity.this, new OnSuccessListener<Location>() {
+                        @Override
+                        public void onSuccess(Location location) {
+                            // Got last known location. In some rare situations this can be null.
+                            if (location != null) {
+                                currentLocation = location;
+                            }
+                        }
+                    });
+            return currentLocation;
+        }
+
+        @Override
+        protected void onPostExecute(Location location) {
+            if (location != null)
+                model.setLastKnownLocation(location);
+            else
+                new GetCurrentLocationTask().execute();
+        }
     }
 }

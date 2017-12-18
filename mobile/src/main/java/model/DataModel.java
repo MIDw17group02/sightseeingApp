@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+
+
 /**
  * Central data model class. It stores a sorted(!) ascending list of POIs in terms of their distance to the start coordinates and
  * also serves as a LocationListener. When the position changes the models position data gets updated.
@@ -21,11 +23,16 @@ public class DataModel implements LocationListener {
     private static DataModel dataModel; // Singleton instance
     private GoogleApiClient mGoogleApiClient;
 
+    private TourConfiguration tourConfiguration;
+
+    private TourStatistics tourStatistics;
+
     private List<POI> nearbyPOIs;
     private Location lastLocation;
 
-
     private DataModel() {
+        tourConfiguration = new TourConfiguration();
+        tourStatistics = new TourStatistics();
         nearbyPOIs = new ArrayList<>();
     }
 
@@ -43,7 +50,7 @@ public class DataModel implements LocationListener {
 
     public boolean setLastKnownLocation(Location location) {
         if (location != null) {
-            Log.e("last known location", location.toString());
+            Log.e(getClass().getSimpleName(),location.toString());
             this.lastLocation = location;
             return true;
         }
@@ -63,6 +70,8 @@ public class DataModel implements LocationListener {
         }
     }
 
+
+
     /**
      * Return the POI to a given index.
      *
@@ -77,9 +86,7 @@ public class DataModel implements LocationListener {
     }
 
     public void clearPOIs() {
-
         nearbyPOIs = new ArrayList<POI>();
-
     }
 
     /**
@@ -151,5 +158,19 @@ public class DataModel implements LocationListener {
 
     }
 
+    public TourConfiguration getTourConfiguration() {
+        return tourConfiguration;
+    }
 
+    public void setTourConfiguration(TourConfiguration tourConfiguration) {
+        this.tourConfiguration = tourConfiguration;
+    }
+
+    public TourStatistics getTourStatistics() {
+        return tourStatistics;
+    }
+
+    public void setTourStatistics(TourStatistics tourStatistics) {
+        this.tourStatistics = tourStatistics;
+    }
 }

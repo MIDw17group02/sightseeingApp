@@ -1,5 +1,9 @@
 package com.example.de.testssapplication;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
@@ -30,7 +34,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.List;
 
+import model.DirectionHelper;
+import model.POI;
 import network.WatchNotifier;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -49,6 +56,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private static final int DEFAULT_ZOOM = 10;
     private Location mLastKnownLocation;
+
+    private DirectionHelper directionHelper;
 
 
     @Override
@@ -74,69 +83,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         // Construct a FusedLocationProviderClient.
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
-        /*
-        //get access token
-        String url = "https://api.yelp.com/oauth2/token?client_id=" +
-                getString(R.string.yelp_client_id) + "&client_secret=" + getString(R.string.yelp_client_secret);
-        OkHttpClient client = new OkHttpClient();
-        Request request = new Request.Builder().url(url).post(new RequestBody() {
-            @Nullable
-            @Override
-            public MediaType contentType() {
-                return null;
-            }
-
-            @Override
-            public void writeTo(BufferedSink sink) throws IOException {
-
-            }
-        }).build();
-        Response response = null;
-        try {
-            response = client.newCall(request).execute();
-            JSONObject jsonObjectToken = new JSONObject(response.body().string().trim());
-            access_token = jsonObjectToken.getString("access_token");
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String term = "dönner";                       // term
-                String location = "Hannover, Germany";            // location
-                String price = "1";
-                OkHttpClient client = new OkHttpClient();
-                okhttp3.Request request = new okhttp3.Request.Builder().
-                        url("https://api.yelp.com/v3/businesses/search?term=" + term + "&location=" + location + "&limit=10&sort_by=rating&price=" + price + "").
-                        addHeader("authorization", "Bearer " + access_token).
-                        build();
-                try {
-                    okhttp3.Response response2 = client.newCall(request).execute();
-                    JSONObject jsonObject = new JSONObject(response2.body().string().trim());
-                    JSONArray myResponse = (JSONArray) jsonObject.get("businesses");
-                    String s = "";
-                    for (int i = 0; i < myResponse.length(); i++) {
-                        s += myResponse.getJSONObject(i).getString("id");
-                        s += "__\n";
-                    }
-                    textView.setText(s);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-
-            }
-        });
-        */
-
         SupportMapFragment map = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         map.getMapAsync(this);
+
     }
 
     //private String access_token;
@@ -149,7 +98,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
      */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.current_place_menu, menu);
+        getMenuInflater().inflate(R.menu.map_menu, menu);
         return true;
     }
 
@@ -161,9 +110,32 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.option_get_place) {
-            showCurrentPOIs();
+        if (item.getItemId() == R.id.option_exit_tour) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage(R.string.dialog_want_to_exit);
+            builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    // Finish the App
+                    //finishAndRemoveTask();
+                    //finishAffinity();
+                    finish();
+                    Intent intent = new Intent(getApplicationContext(), EndScreenActivity.class);
+                    startActivity(intent);
+                }
+            });
+            builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    dialogInterface.dismiss();
+                }
+            });
+
+            AlertDialog dialog = builder.create();
+            dialog.setCancelable(false);
+            dialog.show();
         }
+
         return true;
     }
 
@@ -180,44 +152,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         // Get the current location of the device and set the position of the map.
         getDeviceLocation();
 
+        directionHelper = DirectionHelper.getInstance(mMap);
+        List<POI> pois = directionHelper.makeTours();
+        directionHelper.addPolylineDirection(this, pois);
+
     }
-
-    /**
-     * Prompts the user to select the current place from a list of likely places, and shows the
-     * current place on the map - provided the user has granted location permission.
-     */
-    private void showCurrentPOIs() {
-        if (mMap == null) {
-            return;
-        }
-
-        if (mLocationPermissionGranted && mLastKnownLocation != null) {
-            double mLong = mLastKnownLocation.getLongitude();
-            double mLat = mLastKnownLocation.getLatitude();
-            String url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?"+
-            "location="+mLat+","+mLong+"&radius=500&type=restaurant&key="+getString(R.string.google_maps_key);
-            OkHttpClient client = new OkHttpClient();
-            Request request = new Request.Builder().url(url).build();
-            Response response = null;
-            try {
-                response = client.newCall(request).execute();
-                JSONObject jsonObjectToken = new JSONObject(response.body().string().trim());
-                JSONArray jsonArray = jsonObjectToken.getJSONArray("results");
-                String text = "";
-                for (int i = 0; i< jsonArray.length(); i++){
-                    JSONObject jsonObject = jsonArray.getJSONObject(i);
-                    text += jsonObject.getString("name");
-                    text += "\n";
-                }
-                Toast.makeText(this.getApplicationContext(), text , Toast.LENGTH_LONG).show();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
 
     /**
      * Gets the current location of the device, and positions the map's camera.
@@ -309,5 +248,30 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         }
     }
 
+    @Override
+    public void onBackPressed() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(R.string.dialog_want_to_exit);
+        builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                // Finish the App
+                finish();
+                Intent intent = new Intent(getApplicationContext(), EndScreenActivity.class);
+                startActivity(intent);
+            }
+        });
+        builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.setCancelable(false);
+        dialog.show();
+    }
 }
 

@@ -33,8 +33,6 @@ public class POISelectorActivity extends AppCompatActivity {
     private SectionsPagerAdapter mSectionsPagerAdapter; // The {@link android.support.v4.view.PagerAdapter} that will provide fragments for each of the sections.
     private ViewPager mViewPager; // The {@link ViewPager} that will host the section contents.
     private DataModel model;
-    private FusedLocationProviderClient mFusedLocationClient;
-    private Location currentLocation;
     private POIMapFragment mapFragment;
     private POIListFragment listFragment;
 
@@ -43,12 +41,12 @@ public class POISelectorActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_poiselector);
 
+        // Update the title.
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setTitle(R.string.title_activity_poiselector);
 
-        // Create the adapter that will return a fragment for each of the three
-        // primary sections of the activity.
+        // Create the adapter that will return a fragment for each of the three primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         // Set up the ViewPager with the sections adapter.
@@ -99,9 +97,6 @@ public class POISelectorActivity extends AppCompatActivity {
             }
         });
         model = DataModel.getInstance();
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-        new GetCurrentLocationTask().execute();
-
 
     }
 
@@ -135,30 +130,4 @@ public class POISelectorActivity extends AppCompatActivity {
         }
     }
 
-    private class GetCurrentLocationTask extends AsyncTask<Void, Void, Location> {
-
-        @SuppressLint("MissingPermission")
-        @Override
-        protected Location doInBackground(Void... voids) {
-            mFusedLocationClient.getLastLocation()
-                    .addOnSuccessListener(POISelectorActivity.this, new OnSuccessListener<Location>() {
-                        @Override
-                        public void onSuccess(Location location) {
-                            // Got last known location. In some rare situations this can be null.
-                            if (location != null) {
-                                currentLocation = location;
-                            }
-                        }
-                    });
-            return currentLocation;
-        }
-
-        @Override
-        protected void onPostExecute(Location location) {
-            if (location != null)
-                model.setLastKnownLocation(location);
-            else
-                new GetCurrentLocationTask().execute();
-        }
-    }
 }
