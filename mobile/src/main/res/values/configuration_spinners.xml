@@ -10,14 +10,10 @@
         <item>3.0 h</item>
     </string-array>
 
-    <string-array name="distance_array">
-        <item>0.5 km</item>
-        <item>1.0 km</item>
-        <item>1.5 km</item>
-        <item>2.0 km</item>
-        <item>3.0 km</item>
-        <item>4.0 km</item>
-        <item>5.0 km</item>
+    <string-array name="tempo_array">
+        <item>Gemütlich</item>
+        <item>Normal</item>
+        <item>Schnell</item>
     </string-array>
 
 </resources>

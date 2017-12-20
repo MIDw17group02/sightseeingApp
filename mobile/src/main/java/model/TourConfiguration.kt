@@ -7,18 +7,22 @@ package model
  */
 class TourConfiguration {
 
+    // Average walking speed in km/h
+    var avgWalkSpeed: Double = 5.0
+
     // Indicate if the user wants to end the tour where he started it. Default: false
     var isRoundTour: Boolean = false
 
-    // Selected distance by the user [km]. Default: 2.0km
-    var distance: Double = 0.toDouble()
+    // Selected Tempo Level
+    // 0:slow, 1:normal, 2:fast
+    var tempo: Int = 0.toInt()
 
     // Selected duration by the user [h]. Default: 1.0h
     var duration: Double = 0.toDouble()
 
     init {
         isRoundTour = false
-        distance = 2.0
+        tempo = 1
         duration = 1.0
     }
 }

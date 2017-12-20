@@ -48,7 +48,7 @@ public class ConfigurationActivity extends AppCompatActivity implements GoogleAp
     private Button selectPOIs;
     private Switch switchRound;
     ProgressDialog progressDialog;
-    private Spinner distanceSpinner;
+    private Spinner tempoSpinner;
     private Spinner durationSpinner;
     private FusedLocationProviderClient mFusedLocationClient;
     final int location_permission_request = 1;
@@ -80,30 +80,28 @@ public class ConfigurationActivity extends AppCompatActivity implements GoogleAp
         progressDialog = new ProgressDialog(this);
 
         switchRound = (Switch) findViewById(R.id.switch_roundtour);
-        switchRound.setText(getString(R.string.roundOff));
+        /*switchRound.setText(getString(R.string.roundOff));
         switchRound.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
                 switchRound.setText(checked ? getString(R.string.roundOn) : getString(R.string.roundOff));
             }
-        });
+        });*/
 
-        distanceSpinner = (Spinner) findViewById(R.id.spinner_distance);
-        final ArrayAdapter<CharSequence> sp_adapter_1 = ArrayAdapter.createFromResource(this, R.array.distance_array, R.layout.double_spinner_item);
+        tempoSpinner = (Spinner) findViewById(R.id.spinner_tempo);
+        final ArrayAdapter<CharSequence> sp_adapter_1 = ArrayAdapter.createFromResource(this, R.array.tempo_array, R.layout.double_spinner_item);
         sp_adapter_1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        distanceSpinner.setAdapter(sp_adapter_1);
-        distanceSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        tempoSpinner.setAdapter(sp_adapter_1);
+        tempoSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                String distance_str = (String) adapterView.getItemAtPosition(i);
-                distance_str = distance_str.replace(" km", "");
-                model.getTourConfiguration().setDistance(Double.valueOf(distance_str));
+                model.getTourConfiguration().setTempo(i);
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {}
         });
-        distanceSpinner.setSelection(3);
+        tempoSpinner.setSelection(1);
 
         durationSpinner = (Spinner) findViewById(R.id.spinner_duration);
         ArrayAdapter<CharSequence> sp_adapter_2 = ArrayAdapter.createFromResource(this, R.array.duration_array, R.layout.double_spinner_item);
@@ -114,7 +112,7 @@ public class ConfigurationActivity extends AppCompatActivity implements GoogleAp
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 String duration_str = (String) adapterView.getItemAtPosition(i);
                 duration_str = duration_str.replace(" h", "");
-                model.getTourConfiguration().setDistance(Double.valueOf(duration_str));
+                model.getTourConfiguration().setDuration(Double.valueOf(duration_str));
             }
 
             @Override
@@ -128,7 +126,8 @@ public class ConfigurationActivity extends AppCompatActivity implements GoogleAp
             public void onClick(View view) {
 
                 final int radius;
-                double distance = model.getTourConfiguration().getDistance(); // Distance is in km => *1000
+                // Distance[km] = (Speed[km/h]- 1 km/h + Tempo[1] * 1 km/h) * Time[h]
+                double distance = (model.getTourConfiguration().getAvgWalkSpeed() + (double) model.getTourConfiguration().getTempo() - 1.0) * model.getTourConfiguration().getDuration();
                 if (switchRound.isActivated()) {
                     radius = (int) (distance * 1000.0 / 2.0);
                 } else {

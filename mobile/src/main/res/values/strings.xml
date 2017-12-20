@@ -16,6 +16,7 @@
 
     <string name="roundLabel">Rundgang</string>
     <string name="distanceLabel">Distanz</string>
+    <string name="tempoLabel">Lauftempo</string>
     <string name="durationLabel">Dauer</string>
     <string name="visitedPOIs">Besuchte\nSehenswürdigkeiten</string>
     <string name="roundOn">An</string>

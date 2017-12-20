@@ -72,15 +72,15 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:id="@+id/label_distance"
+                android:id="@+id/label_tempo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="146dp"
+                android:layout_marginRight="120dp"
                 android:textSize="@dimen/configuration_activity_text_size"
-                android:text="@string/distanceLabel" />
+                android:text="@string/tempoLabel" />
 
             <Spinner
-                android:id="@+id/spinner_distance"
+                android:id="@+id/spinner_tempo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/configuration_activity_text_size">
