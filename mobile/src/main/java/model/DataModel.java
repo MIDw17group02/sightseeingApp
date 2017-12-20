@@ -3,7 +3,9 @@ package model;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
+import android.view.View;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 
@@ -24,7 +26,6 @@ public class DataModel implements LocationListener {
     private GoogleApiClient mGoogleApiClient;
 
     private TourConfiguration tourConfiguration;
-
     private TourStatistics tourStatistics;
 
     private List<POI> nearbyPOIs;
@@ -47,7 +48,6 @@ public class DataModel implements LocationListener {
         return dataModel;
     }
 
-
     public boolean setLastKnownLocation(Location location) {
         if (location != null) {
             Log.e(getClass().getSimpleName(),location.toString());
@@ -69,8 +69,6 @@ public class DataModel implements LocationListener {
             Collections.sort(nearbyPOIs);
         }
     }
-
-
 
     /**
      * Return the POI to a given index.

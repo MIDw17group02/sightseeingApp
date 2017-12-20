@@ -6,6 +6,7 @@ import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -72,6 +73,8 @@ public class POIMapFragment extends Fragment implements OnMapReadyCallback,
     // The geographical location where the device is currently located. That is, the last-known
     // location retrieved by the Fused Location Provider.
     private Location mLastKnownLocation;
+
+    public FloatingActionButton fab;
 
     public POIMapFragment() {
     }
@@ -272,6 +275,10 @@ public class POIMapFragment extends Fragment implements OnMapReadyCallback,
                 mPOI.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
                 mPOI.setSnippet("Nicht ausgewählt");
             }
+        }
+
+        if (fab != null) {
+            fab.setForeground(getResources().getDrawable(model.getSelectedPOIs().size() == 0 ? R.drawable.right_arrow_red : R.drawable.right_arrow));
         }
     }
 

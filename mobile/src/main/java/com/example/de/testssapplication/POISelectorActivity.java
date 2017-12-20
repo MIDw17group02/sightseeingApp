@@ -2,8 +2,8 @@ package com.example.de.testssapplication;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.location.Location;
-import android.os.AsyncTask;
+import android.graphics.drawable.Drawable;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -15,31 +15,33 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.Menu;
+import android.view.MotionEvent;
 import android.view.View;
-
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnSuccessListener;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 
 import Fragments.POIListFragment;
 import Fragments.POIMapFragment;
 import model.DataModel;
-import network.POIFetcher;
+import model.POI;
 
 public class POISelectorActivity extends AppCompatActivity {
 
+    private CoordinatorLayout rootLayout;
     private SectionsPagerAdapter mSectionsPagerAdapter; // The {@link android.support.v4.view.PagerAdapter} that will provide fragments for each of the sections.
     private ViewPager mViewPager; // The {@link ViewPager} that will host the section contents.
     private DataModel model;
     private POIMapFragment mapFragment;
     private POIListFragment listFragment;
+    private FloatingActionButton nextButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_poiselector);
+
+        model = DataModel.getInstance();
 
         // Update the title.
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -83,8 +85,8 @@ public class POISelectorActivity extends AppCompatActivity {
             }
         });
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        nextButton = (FloatingActionButton) findViewById(R.id.fab);
+        nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (model.getSelectedPOIs().size() == 0) {
@@ -96,8 +98,6 @@ public class POISelectorActivity extends AppCompatActivity {
                 }
             }
         });
-        model = DataModel.getInstance();
-
     }
 
     /**
@@ -116,10 +116,12 @@ public class POISelectorActivity extends AppCompatActivity {
 
             if (position == 0) {
                 listFragment = new POIListFragment();
+                listFragment.fab = nextButton;
                 return listFragment;
             } else {
                 mapFragment = new POIMapFragment();
                 mapFragment.setParent(POISelectorActivity.this);
+                mapFragment.fab = nextButton;
                 return mapFragment;
             }
         }

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,8 +29,9 @@ import model.POI;
  */
 public class POIListFragment extends Fragment {
 
-    DataModel model;
-    POIGridAdapter poiAdapter;
+    private DataModel model;
+    private POIGridAdapter poiAdapter;
+    public FloatingActionButton fab;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup viewGroup, Bundle savedInstanceState) {
@@ -63,6 +65,9 @@ public class POIListFragment extends Fragment {
 
         @Override
         public int getCount() {
+            if (fab != null) {
+                fab.setForeground(getResources().getDrawable(model.getSelectedPOIs().size() == 0 ? R.drawable.right_arrow_red : R.drawable.right_arrow));
+            }
             return model.getPOIcount();
         }
 
