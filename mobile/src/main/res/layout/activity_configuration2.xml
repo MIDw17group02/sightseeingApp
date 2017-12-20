@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.de.testssapplication.ConfigurationActivity">
+
+    <TableLayout
+        android:layout_marginTop="50dp"
+        android:layout_marginLeft="40dp"
+        android:layout_marginRight="40dp"
+        android:stretchColumns="1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:layout_marginTop="@dimen/configuration_activity_table_vertical">
+
+            <TextView
+                android:id="@+id/label_roundtour"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/roundLabel"
+                android:textColor="#000000"
+                android:textSize="@dimen/configuration_activity_text_size" />
+
+            <Switch
+                android:id="@+id/switch_roundtour"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingRight="15dp"
+                android:layout_gravity="right"
+                android:maxLines="1"
+                android:textSize="@dimen/configuration_activity_text_size" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="@dimen/configuration_activity_table_vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Soll die Tour am Startpunkt wieder enden?"
+                android:textSize="@dimen/configuration_activity_info_text_size" />
+        </TableRow>
+
+        <TableRow
+            android:layout_marginTop="@dimen/configuration_activity_table_vertical"
+            android:gravity="center_vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/label_duration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/durationLabel"
+                android:textColor="#000000"
+                android:textSize="@dimen/configuration_activity_text_size" />
+
+            <Spinner
+                android:id="@+id/spinner_duration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:textSize="@dimen/configuration_activity_text_size"></Spinner>
+        </TableRow>
+
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="@dimen/configuration_activity_table_vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Wie lange soll die Tour dauern?"
+                android:textSize="@dimen/configuration_activity_info_text_size" />
+        </TableRow>
+
+
+        <TableRow
+            android:layout_marginTop="@dimen/configuration_activity_table_vertical"
+            android:layout_width="wrap_content"
+            android:gravity="center_vertical"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/label_tempo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="@string/tempoLabel"
+                android:textColor="#000000"
+                android:textSize="@dimen/configuration_activity_text_size" />
+
+            <Spinner
+                android:id="@+id/spinner_tempo"
+                android:layout_width="wrap_content"
+                android:layout_gravity="right"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/configuration_activity_text_size"></Spinner>
+        </TableRow>
+
+
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="20dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Wie schnell möchten Sie gehen?"
+                android:textSize="@dimen/configuration_activity_info_text_size" />
+        </TableRow>
+    </TableLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_gravity="end|bottom"
+        android:layout_margin="@dimen/fab_margin"
+        android:foreground="@drawable/right_arrow" />
+
+</RelativeLayout>

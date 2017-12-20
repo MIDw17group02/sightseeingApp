@@ -14,6 +14,8 @@ import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -45,7 +47,7 @@ public class ConfigurationActivity extends AppCompatActivity implements GoogleAp
     //Log-Tag
     public static String TAG = "Phone-Configuration";
 
-    private Button selectPOIs;
+    private FloatingActionButton nextButton;
     private Switch switchRound;
     ProgressDialog progressDialog;
     private Spinner tempoSpinner;
@@ -62,7 +64,7 @@ public class ConfigurationActivity extends AppCompatActivity implements GoogleAp
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_configuration);
+        setContentView(R.layout.activity_configuration2);
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
@@ -120,8 +122,8 @@ public class ConfigurationActivity extends AppCompatActivity implements GoogleAp
         });
         durationSpinner.setSelection(1);
 
-        selectPOIs = (Button) findViewById(R.id.continueSelectionButton);
-        selectPOIs.setOnClickListener(new View.OnClickListener() {
+        FloatingActionButton nextButton = (FloatingActionButton) findViewById(R.id.fab2);
+        nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -149,7 +151,7 @@ public class ConfigurationActivity extends AppCompatActivity implements GoogleAp
                             POIFetcher.requestPOIs(getApplicationContext(),
                                     52.3758916,
                                     9.7320104,
-                                    2000);
+                                    radius);
                         }
                         progressDialog.dismiss();
                         Intent i = new Intent(getApplicationContext(), POISelectorActivity.class);

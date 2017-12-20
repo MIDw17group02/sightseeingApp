@@ -25,6 +25,7 @@
                 android:layout_width="wrap_content"
                 android:layout_marginRight="160dp"
                 android:textSize="@dimen/configuration_activity_text_size"
+                android:textColor="#000000"
                 android:layout_height="wrap_content"
                 android:text="@string/durationLabel" />
 
@@ -51,6 +52,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginRight="146dp"
                 android:textSize="@dimen/configuration_activity_text_size"
+                android:textColor="#000000"
                 android:text="@string/distanceLabel" />
 
             <TextView
@@ -76,6 +78,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginRight="53dp"
                 android:textSize="@dimen/configuration_activity_text_size"
+                android:textColor="#000000"
                 android:minLines="2"
                 android:text="@string/visitedPOIs" />
 
@@ -96,6 +99,7 @@
         android:layout_margin="8dp"
         android:layout_marginBottom="8dp"
         android:text="@string/endStr"
+        android:textAllCaps="false"
         app:layout_constraintBottom_toBottomOf="parent" />
 
 </android.support.constraint.ConstraintLayout>
