@@ -15,7 +15,6 @@ import android.os.StrictMode;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -23,8 +22,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.Spinner;
 import android.widget.Switch;
 
@@ -33,7 +30,6 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.places.Places;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.NodeApi;
@@ -161,18 +157,9 @@ public class ConfigurationActivity extends AppCompatActivity implements GoogleAp
             }
         });
 
-        //GoogleApiClient hinzufügen
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this /* FragmentActivity */,
-                        this /* OnConnectionFailedListener */)
-                .addConnectionCallbacks(this)
-                .addApi(LocationServices.API)
-                .addApi(Places.GEO_DATA_API)
-                .addApi(Places.PLACE_DETECTION_API)
-                .addApi(Wearable.API)
-                .build();
+        //WatchID holen und der Kommunikationsklasse geben
+        mGoogleApiClient = new GoogleApiHelper(this).getGoogleApiClient();
         mGoogleApiClient.connect();
-        model.setGoogleApiClient(mGoogleApiClient);
         //Node-ID der Uhr suchen (momentan basierend auf dem Namen)
         Log.d(TAG, "Searching for connected Devices ...");
         Wearable.NodeApi.getConnectedNodes(mGoogleApiClient).setResultCallback(new ResultCallback<NodeApi.GetConnectedNodesResult>() {
@@ -185,8 +172,7 @@ public class ConfigurationActivity extends AppCompatActivity implements GoogleAp
                     if( node.getDisplayName().equalsIgnoreCase("Moto 360 22P4")){
                         watchId = node.getId();
                         Log.d(TAG,"Watch found and assigned! ("+node.getId()+")");
-                        //add GoogleClient and WatchID to WatchNotifier
-                        WatchNotifier.setGoogleApiClient(mGoogleApiClient);
+                        //add WatchID to WatchNotifier
                         WatchNotifier.setWatchId(watchId);
                     }
                 }

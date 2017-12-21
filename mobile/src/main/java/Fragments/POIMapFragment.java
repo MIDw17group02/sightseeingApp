@@ -15,10 +15,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.example.de.testssapplication.GoogleApiHelper;
 import com.example.de.testssapplication.POISelectorActivity;
 import com.example.de.testssapplication.R;
 import com.google.android.gms.common.ConnectionResult;
@@ -121,7 +120,7 @@ public class POIMapFragment extends Fragment implements OnMapReadyCallback,
         }
 
         model = DataModel.getInstance();
-        GoogleApiClient mGoogleApiClient = model.getGoogleApiClient();
+        GoogleApiClient mGoogleApiClient = new GoogleApiHelper(getActivity()).getGoogleApiClient();
 
         if (mMap != null) updateMarkers();
 
