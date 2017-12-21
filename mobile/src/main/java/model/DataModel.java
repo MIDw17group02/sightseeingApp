@@ -3,11 +3,7 @@ package model;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
-import android.view.View;
-
-import com.google.android.gms.common.api.GoogleApiClient;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,7 +19,6 @@ import java.util.List;
 public class DataModel implements LocationListener {
 
     private static DataModel dataModel; // Singleton instance
-    private GoogleApiClient mGoogleApiClient;
 
     private TourConfiguration tourConfiguration;
     private TourStatistics tourStatistics;
@@ -125,14 +120,6 @@ public class DataModel implements LocationListener {
      */
     public Location getLastLocation() {
         return lastLocation;
-    }
-
-    public GoogleApiClient getGoogleApiClient() {
-        return mGoogleApiClient;
-    }
-
-    public void setGoogleApiClient(GoogleApiClient mGoogleApiClient) {
-        this.mGoogleApiClient = mGoogleApiClient;
     }
 
     @Override
