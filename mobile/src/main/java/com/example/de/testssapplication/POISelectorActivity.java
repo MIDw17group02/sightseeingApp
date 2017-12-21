@@ -70,6 +70,8 @@ public class POISelectorActivity extends AppCompatActivity {
                 if (tab.getPosition() == 1) {
                     if (mapFragment != null) {
                         mapFragment.updateMarkers();
+                        //mapFragment.updateCamera();
+                        mapFragment.getDeviceLocation();
                     }
                 }
             }
