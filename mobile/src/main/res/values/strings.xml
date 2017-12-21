@@ -13,7 +13,7 @@
     This string is used for square devices and overridden by hello_world in
     values-round/strings.xml for round devices.
     -->
-    <string name="action_startTour">Neue Tour erstellen</string>
+    <string name="action_startTour">Neue Tour Erstellen</string>
     <string name="label_config_info">Gestaltung der Tour</string>
     <string name="roundLabel">Rundgang</string>
     <string name="distanceLabel">Distanz</string>
