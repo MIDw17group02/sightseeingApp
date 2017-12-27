@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.de.testssapplication.EndScreenActivity">
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="50dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:stretchColumns="1">
+
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:layout_marginTop="@dimen/configuration_activity_table_vertical">
+
+            <TextView
+                android:id="@+id/label_duration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/durationLabel"
+                android:textColor="#000000"
+                android:textSize="@dimen/configuration_activity_text_size" />
+
+            <TextView
+                android:id="@+id/label_statistic_duration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:paddingRight="@dimen/end_activity_table_right_padding"
+                android:text="57 min"
+                android:textSize="@dimen/configuration_activity_text_size"></TextView>
+        </TableRow>
+
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:layout_marginTop="@dimen/configuration_activity_table_vertical">
+
+            <TextView
+                android:id="@+id/label_tempo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/distanceLabel"
+                android:textColor="#000000"
+                android:textSize="@dimen/configuration_activity_text_size" />
+
+            <TextView
+                android:id="@+id/label_statistic_distance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:maxLines="1"
+                android:text="3.1 km"
+                android:paddingRight="@dimen/end_activity_table_right_padding"
+                android:textSize="@dimen/configuration_activity_text_size"></TextView>
+        </TableRow>
+
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:layout_marginTop="@dimen/configuration_activity_table_vertical">
+
+            <TextView
+                android:id="@+id/label_roundtour"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minLines="2"
+                android:text="@string/visitedPOIs"
+                android:textColor="#000000"
+                android:textSize="@dimen/configuration_activity_text_size" />
+
+            <TextView
+                android:id="@+id/label_poiCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:maxLines="1"
+                android:text="5"
+                android:paddingRight="@dimen/end_activity_table_right_padding"
+                android:textSize="@dimen/configuration_activity_text_size" />
+        </TableRow>
+
+    </TableLayout>
+
+    <Button
+        android:id="@+id/endTourButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/nice_button"
+        android:shadowColor="#000000"
+        android:shadowDx="0"
+        android:shadowDy="0"
+        android:shadowRadius="5"
+        android:text="@string/endStr"
+        android:textAllCaps="false"
+        android:textColor="#FFFFFF"
+        android:textSize="@dimen/button_text_size"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</RelativeLayout>

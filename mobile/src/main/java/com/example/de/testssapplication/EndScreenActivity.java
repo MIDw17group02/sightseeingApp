@@ -21,7 +21,7 @@ public class EndScreenActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_end_screen);
+        setContentView(R.layout.activity_end_screen2);
 
         setTitle(getString(R.string.title_end_screen));
 
@@ -40,8 +40,8 @@ public class EndScreenActivity extends AppCompatActivity {
         });
 
         TourStatistics tourStatistics = DataModel.getInstance().getTourStatistics();
-        distanceText.setText(String.valueOf(tourStatistics.getWalkedDistance()));
-        durationText.setText(String.valueOf(tourStatistics.getWalkedDuration()));
-        visitedPOIsText.setText("\n"+String.valueOf(tourStatistics.getVisitedPOIs()));
+        durationText.setText(String.valueOf(tourStatistics.getWalkedDuration()) + " min");
+        distanceText.setText(String.valueOf(tourStatistics.getWalkedDistance()) + " km");
+        visitedPOIsText.setText(String.valueOf(tourStatistics.getVisitedPOIs()));
     }
 }

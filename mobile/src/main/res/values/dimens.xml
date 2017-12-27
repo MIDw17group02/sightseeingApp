@@ -25,4 +25,8 @@
     <dimen name="configuration_activity_text_size">16dp</dimen>
     <dimen name="configuration_activity_info_text_size">12dp</dimen>
     <dimen name="configuration_activity_table_vertical">20dp</dimen>
+
+    <dimen name="end_activity_table_right_padding">15dp</dimen>
+
+
 </resources>
