@@ -127,9 +127,10 @@ public class POIListFragment extends Fragment {
 
             if (poi.isSelected()) {
                 // If the user selected a poi, send draw a green border around it.
-                v.setBackgroundResource(R.layout.grid_poi_shape);
+                v.setBackgroundResource(R.layout.grid_poi_shape_selected);
             } else {
-                v.setBackground(null);
+                // If a poi is not selected, surround it with a gray border.
+                v.setBackgroundResource(R.layout.grid_poi_shape_unselected);
             }
 
             return v;
