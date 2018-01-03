@@ -169,7 +169,7 @@ public class ConfigurationActivity extends AppCompatActivity implements GoogleAp
                 for (Node node : getConnectedNodesResult.getNodes()) {
                     Log.d(TAG, "ConnectedDevice '"+node.getDisplayName()+"', NodeId = "+node.getId());
 
-                    if( node.getDisplayName().equalsIgnoreCase("Moto 360 22P4")){
+                    if( node.getDisplayName().contains("Moto 360")){
                         watchId = node.getId();
                         Log.d(TAG,"Watch found and assigned! ("+node.getId()+")");
                         //add WatchID to WatchNotifier

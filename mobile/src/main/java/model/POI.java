@@ -22,6 +22,8 @@ public class POI implements Comparable {
     private String place_id;
     private String reference;
 
+    private String infoText;
+
     private int index;
 
     // TODO update this usage by using the location!
@@ -139,6 +141,14 @@ public class POI implements Comparable {
     public void setIndex(int index) {this.index = index;}
 
     public int getIndex() {return index;}
+
+    public String getInfoText() {
+        return infoText;
+    }
+
+    public void setInfoText(String infoText) {
+        this.infoText = infoText;
+    }
 
     @Override
     public int compareTo(@NonNull Object o) {

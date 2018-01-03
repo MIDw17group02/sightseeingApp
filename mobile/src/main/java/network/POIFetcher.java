@@ -6,8 +6,6 @@ import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.util.Log;
 
-import model.DataModel;
-import model.POI;
 import com.example.de.testssapplication.R;
 
 import org.json.JSONArray;
@@ -17,8 +15,8 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.InputStream;
 
-import okhttp3.Call;
-import okhttp3.Callback;
+import model.DataModel;
+import model.POI;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -188,6 +186,33 @@ public class POIFetcher {
                             e.printStackTrace();
                         }
                     }
+                }
+            }
+
+            //TODO wikipedia api fetch -> Problem: Oft keine oder mehrere Einträge
+            if (poiJSON.has("name")) {
+                String name = poiJSON.getString("name");
+                name = name.replaceAll(" ", "+");
+                String wikiURL = "https://de.wikipedia.org/w/api.php?action=opensearch&search=" + name + "&limit=1&namespace=0&format=json";
+                Log.d("Phone-WikiFetch", "Try fetching...: " + name);
+
+                OkHttpClient wikiClient = new OkHttpClient();
+                final Request request = new Request.Builder().url(wikiURL).build();
+                Response response = null;
+                DataModel.getInstance().clearPOIs();
+
+                try {
+                    response = wikiClient.newCall(request).execute();
+                    //TODO React to ZERO RESULTS
+                    JSONArray jsonObjectToken = new JSONArray(response.body().string().trim());
+                    Log.d("Phone-WikiFetch", "JSON-Result: " + jsonObjectToken.toString());
+                    String infoText = jsonObjectToken.getJSONArray(2).optString(0);
+                    Log.d("Phone-WikiFetch", "InfoText: " + infoText);
+                    result.setInfoText(infoText);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
 
