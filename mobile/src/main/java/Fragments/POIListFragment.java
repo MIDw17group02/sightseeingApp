@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.example.de.testssapplication.R;
@@ -98,6 +100,7 @@ public class POIListFragment extends Fragment {
             TextView poiTextView = (TextView) v.findViewById(R.id.poi_grid_name);
             ImageView poiImageView = (ImageView) v.findViewById(R.id.poi_grid_image);
             TextView poiTextDistance = (TextView) v.findViewById(R.id.poi_grid_distance);
+            RatingBar poiRatingBar = (RatingBar) v.findViewById(R.id.poi_grid_rating);
 
             String name = poi.getName();
             if (name != null) {
@@ -112,6 +115,12 @@ public class POIListFragment extends Fragment {
                     poiTextDistance.setText(String.valueOf(df.format(distance)) + " km");
                 }
             }
+            double rating = poi.getRating();
+            if (rating == 0.0) {
+                poiRatingBar.setVisibility(View.INVISIBLE);
+            }
+            Log.d("TAG", "Rating " + rating + " " + (float)rating);
+            poiRatingBar.setRating((float) rating);
 
             Bitmap bm = poi.getPhoto();
             if (bm == null) { // Use a default Image if the Bitmap is empty.
