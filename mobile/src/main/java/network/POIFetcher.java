@@ -190,7 +190,7 @@ public class POIFetcher {
             }
 
             //TODO wikipedia api fetch -> Problem: Oft keine oder mehrere Einträge
-            if (poiJSON.has("name")) {
+            /*if (poiJSON.has("name")) {
                 String name = poiJSON.getString("name");
                 name = name.replaceAll(" ", "+");
                 String wikiURL = "https://de.wikipedia.org/w/api.php?action=opensearch&search=" + name + "&limit=1&namespace=0&format=json";
@@ -214,7 +214,7 @@ public class POIFetcher {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-            }
+            }*/
 
         } catch (JSONException e) {
             Log.d("getPOIFromJSON", "Parsing error!");
