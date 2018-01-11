@@ -142,21 +142,24 @@ public class DataModel implements LocationListener {
 
             // Check if any unvisited POI was reached.
             for (POI poi : nearbyPOIs) {
-                Location poiLocation = new Location(LocationManager.GPS_PROVIDER);
-                poiLocation.setLongitude(poi.getLongitude());
-                poiLocation.setLatitude(poi.getLatitude());
-                float delta = location.distanceTo(poiLocation);
-                if (delta <= POI_NOTIFY_RANGE) {
-                    Log.d("GPS", "POI " + poi.getName() + " reached.");
-                    for (ITourTracker tourTracker : tourTrackers) {
-                        tourTracker.OnPOIReached(poi);
+                if (!poi.isVisited()) {
+                    Location poiLocation = new Location(LocationManager.GPS_PROVIDER);
+                    poiLocation.setLongitude(poi.getLongitude());
+                    poiLocation.setLatitude(poi.getLatitude());
+                    float delta = location.distanceTo(poiLocation);
+                    if (delta <= POI_NOTIFY_RANGE) {
+                        Log.d("GPS", "POI " + poi.getName() + " visited.");
+                        for (ITourTracker tourTracker : tourTrackers) {
+                            tourTracker.OnPOIReached(poi);
+                        }
+                        poi.setVisited(true);
+                        tourStatistics.addVisitedPOI(poi);
                     }
-                    tourStatistics.addVisitedPOI(poi);
                 }
             }
 
             // Check if tour end was reached.
-            Log.d("DBG", String.valueOf(tourStatistics.getVisitedPOIs()) + " / " + getSelectedPOIs().size());
+            Log.d("DBG", "POIs " + String.valueOf(tourStatistics.getVisitedPOIs()) + " / " + getSelectedPOIs().size());
             if (tourStatistics.getVisitedPOIs() == getSelectedPOIs().size()) {
                 if (!tourConfiguration.isRoundTour() || (tourConfiguration.isRoundTour() && location.distanceTo(startLocation) <= POI_NOTIFY_RANGE)) {
                     Log.d("GPS", "Tour end was reached.");

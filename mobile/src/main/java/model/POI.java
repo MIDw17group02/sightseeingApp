@@ -24,6 +24,8 @@ public class POI implements Comparable {
 
     private String infoText;
 
+    private boolean visited = false;
+
     private int index;
 
     // TODO update this usage by using the location!
@@ -148,6 +150,14 @@ public class POI implements Comparable {
 
     public void setInfoText(String infoText) {
         this.infoText = infoText;
+    }
+
+    public boolean isVisited() {
+        return visited;
+    }
+
+    public void setVisited(boolean visited) {
+        this.visited = visited;
     }
 
     @Override

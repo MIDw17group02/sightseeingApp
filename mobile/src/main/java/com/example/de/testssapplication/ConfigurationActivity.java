@@ -45,6 +45,9 @@ public class ConfigurationActivity extends AppCompatActivity implements GoogleAp
     //Log-Tag
     public static String TAG = "Phone-Configuration";
 
+    private final int GPS_UPDATE_MIN_MILLIS = 5000;
+    private final int GPS_UPDATE_MIN_METERS = 10;
+
     private FloatingActionButton nextButton;
     private Switch switchRound;
     ProgressDialog progressDialog;
@@ -151,10 +154,8 @@ public class ConfigurationActivity extends AppCompatActivity implements GoogleAp
                         if (model.getLastLocation() != null) {
                             POIFetcher.requestPOIs(getApplicationContext(), radius);
                         } else {
-                            POIFetcher.requestPOIs(getApplicationContext(),
-                                    52.3758916,
-                                    9.7320104,
-                                    radius);
+                            //POIFetcher.requestPOIs(getApplicationContext(),52.3758916,9.7320104,radius);
+                            Log.e(TAG, "GPS Position Error");
                         }
                         progressDialog.dismiss();
                         Intent i = new Intent(getApplicationContext(), POISelectorActivity.class);
@@ -194,7 +195,7 @@ public class ConfigurationActivity extends AppCompatActivity implements GoogleAp
     @SuppressLint("MissingPermission")
     private void setUpGPS() {
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 10, model);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, GPS_UPDATE_MIN_MILLIS, GPS_UPDATE_MIN_METERS, model);
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         new GetCurrentLocationTask().execute();
     }
