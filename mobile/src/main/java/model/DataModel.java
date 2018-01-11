@@ -133,7 +133,7 @@ public class DataModel implements LocationListener {
 
     @Override
     public void onLocationChanged(Location location) {
-        Log.d(getClass().toString(), "Got new location " + location.toString());
+        Log.d(getClass().toString(), "Changed Location: " + location.toString());
         lastLocation = location;
     }
 

@@ -68,11 +68,13 @@ public class ConfigurationActivity extends AppCompatActivity implements GoogleAp
         StrictMode.setThreadPolicy(policy);
         model = DataModel.getInstance();
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
+            ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
             // Request Permissions from User
-            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, location_permission_request);
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION}, location_permission_request);
+        } else {
+            setUpGPS();
         }
 
         setTitle(getString(R.string.title_activity_configuration));
@@ -183,23 +185,31 @@ public class ConfigurationActivity extends AppCompatActivity implements GoogleAp
                 }
             }
         });
+    }
 
+    /**
+     * Set up the GPS Tracking.
+     * Do not call this method, unless permissions have been granted.
+     */
+    @SuppressLint("MissingPermission")
+    private void setUpGPS() {
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 10, model);
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         new GetCurrentLocationTask().execute();
     }
 
-
-    @SuppressLint("MissingPermission")
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
 
+        for (int i = 0; i < permissions.length;i++)
+        Log.d(TAG, permissions[i] + " " + grantResults[i] + " should be " + PackageManager.PERMISSION_GRANTED);
+
         switch (requestCode) {
             case location_permission_request:
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (grantResults.length > 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
                     // Permissions were granted continue with the app.
-                    LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 10, model);
-                    new GetCurrentLocationTask().execute();
+                    setUpGPS();
                 } else {
                     // Permissions were denied. Show dialog and close app.
                     AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -261,5 +271,10 @@ public class ConfigurationActivity extends AppCompatActivity implements GoogleAp
             else
                 new GetCurrentLocationTask().execute();
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        return;
     }
 }
