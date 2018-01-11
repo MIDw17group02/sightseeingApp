@@ -77,6 +77,7 @@ public class POIFetcher {
             response = client.newCall(request).execute();
             //TODO React to ZERO RESULTS
             JSONObject jsonObjectToken = new JSONObject(response.body().string().trim());
+            Log.d("POIFetcher", "Main request response: " + jsonObjectToken.toString());
             JSONArray places = jsonObjectToken.getJSONArray("results");
 
             for (int i = 0; i < places.length(); i++) {

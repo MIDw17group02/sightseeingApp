@@ -45,8 +45,8 @@ public class EndScreenActivity extends AppCompatActivity {
         tourStatistics.setWalkedDuration(System.currentTimeMillis() - tourStatistics.getWalkedDuration());
         long time = tourStatistics.getWalkedDuration();
         String hours = TimeUnit.MILLISECONDS.toHours(time) != 0 ? TimeUnit.MILLISECONDS.toHours(time) + " Stunden " : "";
-        String minutes = TimeUnit.MILLISECONDS.toMinutes(time) != 0 ? TimeUnit.MILLISECONDS.toMinutes(time) + " Minuten " : "";
-        String seconds = TimeUnit.MILLISECONDS.toSeconds(time) != 0 ? TimeUnit.MILLISECONDS.toSeconds(time) + " Sekunden" : "";
+        String minutes = TimeUnit.MILLISECONDS.toMinutes(time) != 0 ? (TimeUnit.MILLISECONDS.toMinutes(time)-TimeUnit.MILLISECONDS.toHours(time)*60) + " Minuten " : "";
+        String seconds = TimeUnit.MILLISECONDS.toSeconds(time) != 0 ? (TimeUnit.MILLISECONDS.toSeconds(time)-TimeUnit.MILLISECONDS.toMinutes(time)*60) + " Sekunden" : "";
         durationText.setText(hours + minutes + seconds);
         distanceText.setText(String.valueOf(tourStatistics.getWalkedDistance()) + " km");
         visitedPOIsText.setText(String.valueOf(tourStatistics.getVisitedPOIs()));
