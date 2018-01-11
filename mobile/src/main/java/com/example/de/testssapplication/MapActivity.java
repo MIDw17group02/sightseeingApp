@@ -34,8 +34,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
+import model.DataModel;
 import model.DirectionHelper;
 import model.POI;
 import network.WatchNotifier;
@@ -54,11 +56,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private static final String TAG = MapActivity.class.getSimpleName();
     // Used for selecting the current place.
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
-    private static final int DEFAULT_ZOOM = 10;
+    private static final int DEFAULT_ZOOM = 14;
     private Location mLastKnownLocation;
 
     private DirectionHelper directionHelper;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -156,6 +157,14 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         List<POI> pois = directionHelper.makeTours();
         directionHelper.addPolylineDirection(this, pois);
 
+        mLastKnownLocation = DataModel.getInstance().getLastLocation();
+        Log.d("Map", "StartLoc " + mLastKnownLocation.toString());
+        if (mLastKnownLocation != null) {
+            // Set the camera zoom.
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                    new LatLng(mLastKnownLocation.getLatitude(),
+                    mLastKnownLocation.getLongitude()), 12));
+        }
     }
 
     /**

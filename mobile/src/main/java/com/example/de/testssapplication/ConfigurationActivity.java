@@ -22,6 +22,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
 import android.widget.Spinner;
 import android.widget.Switch;
 
@@ -36,6 +37,7 @@ import com.google.android.gms.wearable.NodeApi;
 import com.google.android.gms.wearable.Wearable;
 
 import model.DataModel;
+import model.TourConfiguration;
 import network.POIFetcher;
 import network.WatchNotifier;
 
@@ -78,13 +80,13 @@ public class ConfigurationActivity extends AppCompatActivity implements GoogleAp
         progressDialog = new ProgressDialog(this);
 
         switchRound = (Switch) findViewById(R.id.switch_roundtour);
-        /*switchRound.setText(getString(R.string.roundOff));
         switchRound.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
-                switchRound.setText(checked ? getString(R.string.roundOn) : getString(R.string.roundOff));
+                model.getTourConfiguration().setRoundTour(checked);
+                //switchRound.setText(checked ? getString(R.string.roundOn) : getString(R.string.roundOff));
             }
-        });*/
+        });
 
         tempoSpinner = (Spinner) findViewById(R.id.spinner_tempo);
         final ArrayAdapter<CharSequence> sp_adapter_1 = ArrayAdapter.createFromResource(this, R.array.tempo_array, R.layout.double_spinner_item);
@@ -124,12 +126,15 @@ public class ConfigurationActivity extends AppCompatActivity implements GoogleAp
             public void onClick(View view) {
 
                 final int radius;
+                // Some fine tuning, taking into account, that the route can be longer when calculated.
+                final int lenDivisor = 2;
                 // Distance[km] = (Speed[km/h]- 1 km/h + Tempo[1] * 1 km/h) * Time[h]
-                double distance = (model.getTourConfiguration().getAvgWalkSpeed() + (double) model.getTourConfiguration().getTempo() - 1.0) * model.getTourConfiguration().getDuration();
-                if (switchRound.isActivated()) {
-                    radius = (int) (distance * 1000.0 / 2.0);
+                TourConfiguration configuration = model.getTourConfiguration();
+                double distance = (configuration.getAvgWalkSpeed() + (double) configuration.getTempo() - 1.0) * configuration.getDuration();
+                if (configuration.isRoundTour()) {
+                    radius = (int) (distance * 1000.0 / 2.0) / lenDivisor;
                 } else {
-                    radius = (int) (distance * 1000.0);
+                    radius = (int) (distance * 1000.0) / lenDivisor;
                 }
 
                 progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);

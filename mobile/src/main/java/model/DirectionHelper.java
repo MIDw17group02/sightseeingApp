@@ -71,6 +71,19 @@ public class DirectionHelper {
             currentPOI.showInfoWindow();
         }
 
+        // If the user selected a round tour a polyline from the last to first POI is added.
+        Log.d("DirectionHelper", "ROUNDTOUR " + DataModel.getInstance().getTourConfiguration().isRoundTour());
+        if (DataModel.getInstance().getTourConfiguration().isRoundTour()) {
+            POI p1 = pois.get(pois.size()-1);
+            POI p2 = pois.get(0);
+            PolylineOptions p = getPolylineDirection(context, p1.getLatitude(), p1.getLongitude(),
+                    p2.getLatitude(), p2.getLongitude());
+            Polyline polyline = mMap.addPolyline(p);
+            polyline.setEndCap(new RoundCap());
+            polyline.setWidth(POLYLINE_STROKE_WIDTH_PX);
+            polyline.setColor(COLOR_GREEN_ARGB);
+            polyline.setJointType(JointType.ROUND);
+        }
     }
 
     private PolylineOptions getPolylineDirection(Context context, double startLat, double
