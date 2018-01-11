@@ -14,9 +14,9 @@ public class POI implements Comparable {
     private String name;
     private double longitude;
     private double latitude;
-    private double rating; // Google rating from 0.0 to 5.0 stars.
+    private double rating;   // Google rating from 0.0 to 5.0 stars.
     private String vicinity; // = Address of the poi
-    private Bitmap photo; // Bitmap of a photo that is included in the google place.
+    private Bitmap photo;    // Bitmap of a photo that is queried from the google place.
 
     private String id;
     private String place_id;

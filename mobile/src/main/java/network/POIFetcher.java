@@ -112,7 +112,6 @@ public class POIFetcher {
 
             @Override
             public void onResponse(Call call, Response response) {
-                //TODO React to ZERO RESULTS
                 Log.d("POIFETCHER", response.toString());
                 JSONObject jsonObjectToken = null;
                 try {

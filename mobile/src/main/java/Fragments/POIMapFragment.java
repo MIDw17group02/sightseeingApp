@@ -183,11 +183,6 @@ public class POIMapFragment extends Fragment implements OnMapReadyCallback,
 
         snippet.setTextColor(markerPOI.isSelected() ? Color.GREEN : Color.RED);
 
-        //TODO: add image to info window
-        //ImageView photo = new ImageView();
-        //photo.setImageBitmap(markerPOI.getPhoto());
-        //infoWindow.set
-
         return infoWindow;
     }
 

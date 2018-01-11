@@ -48,7 +48,7 @@ public class EndScreenActivity extends AppCompatActivity {
         String minutes = TimeUnit.MILLISECONDS.toMinutes(time) != 0 ? (TimeUnit.MILLISECONDS.toMinutes(time)-TimeUnit.MILLISECONDS.toHours(time)*60) + " Minuten " : "";
         String seconds = TimeUnit.MILLISECONDS.toSeconds(time) != 0 ? (TimeUnit.MILLISECONDS.toSeconds(time)-TimeUnit.MILLISECONDS.toMinutes(time)*60) + " Sekunden" : "";
         durationText.setText(hours + minutes + seconds);
-        distanceText.setText(String.valueOf(tourStatistics.getWalkedDistance()) + " km");
+        distanceText.setText(String.valueOf(String.format("%.2f", tourStatistics.getWalkedDistance())) + " km");
         visitedPOIsText.setText(String.valueOf(tourStatistics.getVisitedPOIs()));
     }
 }

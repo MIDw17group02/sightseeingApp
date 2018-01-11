@@ -95,12 +95,33 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     @Override
     public void OnTourEnd() {
-        //TODO
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.dialog_finish_title);
+        builder.setMessage(R.string.dialog_want_to_finish);
+        builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                finish();
+                Intent intent = new Intent(getApplicationContext(), EndScreenActivity.class);
+                startActivity(intent);
+            }
+        });
+        builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.setCancelable(false);
+        dialog.show();
     }
 
     @Override
     public void OnPOIReached(POI poi) {
-        //TODO
+        //TODO send info to watch
+        //WatchNotifier.sendInfoData(poi.getPhoto(),poi.getName(),poi.getInfoText());
     }
     /**
      * Sets up the options menu.
