@@ -146,7 +146,8 @@ public class DataModel implements LocationListener {
                     Location poiLocation = new Location(LocationManager.GPS_PROVIDER);
                     poiLocation.setLongitude(poi.getLongitude());
                     poiLocation.setLatitude(poi.getLatitude());
-                    float delta = location.distanceTo(poiLocation);
+                    double delta = (double) location.distanceTo(poiLocation);
+                    Log.d("GPS", String.valueOf(delta));
                     if (delta <= POI_NOTIFY_RANGE) {
                         Log.d("GPS", "POI " + poi.getName() + " visited.");
                         for (ITourTracker tourTracker : tourTrackers) {
