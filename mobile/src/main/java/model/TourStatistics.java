@@ -4,12 +4,13 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Created by de on 17.12.2017.
+ * This class wraps up the statistics for the current Tour.
  */
-
 public class TourStatistics {
 
+    // Walked distance so far in meters.
     private double walkedDistance;
+    // Tour duration til now in milliseconds since 1970.
     private long walkedDuration;
     private List<POI> seenPOIs;
 

@@ -189,7 +189,7 @@ public class ConfigurationActivity extends AppCompatActivity implements GoogleAp
 
     /**
      * Set up the GPS Tracking.
-     * Do not call this method, unless permissions have been granted.
+     * Do not call this method, unless permissions have been granted already.
      */
     @SuppressLint("MissingPermission")
     private void setUpGPS() {
@@ -267,7 +267,7 @@ public class ConfigurationActivity extends AppCompatActivity implements GoogleAp
         @Override
         protected void onPostExecute(Location location) {
             if (location != null)
-                model.setLastKnownLocation(location);
+                model.setLastLocation(location);
             else
                 new GetCurrentLocationTask().execute();
         }

@@ -17,13 +17,8 @@
 </Placemark>
 
 <Placemark>
-    <name>Beginenturm</name>
-    <Point><coordinates>9.731231,52.371746,0</coordinates></Point>
-</Placemark>
-
-<Placemark>
-    <name>DenkmalGoetingerSieben</name>
-    <Point><coordinates>9.734323,52.370014,0</coordinates></Point>
+    <name>Welfenschloss</name>
+    <Point><coordinates>9.717726,52.382154,0</coordinates></Point>
 </Placemark>
 
 </kml>

@@ -2,6 +2,7 @@ package model;
 
 import android.location.Location;
 import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -14,7 +15,8 @@ import java.util.List;
 /**
  * Central data model class. It stores a sorted(!) ascending list of POIs in terms of their distance to the start coordinates and
  * also serves as a LocationListener. When the position changes the models position data gets updated.
- * Implemented as Singleton Pattern, such that each Acitivty can access the data in its own lifecycle.
+ * Any ITourTrackers are notified, when an event occurs on a position change.
+ * Implemented as Singleton Pattern, such that each Activity can access the data in its own lifecycle.
  */
 public class DataModel implements LocationListener {
 
@@ -26,10 +28,16 @@ public class DataModel implements LocationListener {
     private List<POI> nearbyPOIs;
     private Location lastLocation;
 
+    private Location startLocation = null;
+    private final double POI_NOTIFY_RANGE = 30.0;
+
+    public List<ITourTracker> tourTrackers;
+
     private DataModel() {
         tourConfiguration = new TourConfiguration();
         tourStatistics = new TourStatistics();
         nearbyPOIs = new ArrayList<>();
+        tourTrackers = new ArrayList<>();
     }
 
     /*
@@ -41,24 +49,6 @@ public class DataModel implements LocationListener {
         }
 
         return dataModel;
-    }
-
-    public boolean setLastKnownLocation(Location location) {
-        if (location != null) {
-            Log.e(getClass().getSimpleName(),location.toString());
-            if (lastLocation != null) {
-                tourStatistics.setWalkedDistance(tourStatistics.getWalkedDistance() + lastLocation.distanceTo(location));
-                for (POI poi : nearbyPOIs) {
-                    if (poi.getLongitude() == location.getLongitude() && poi.getLatitude() == location.getLatitude()) {
-                        tourStatistics.addVisitedPOI(poi);
-                        break;
-                    }
-                }
-            }
-            this.lastLocation = location;
-            return true;
-        }
-        return false;
     }
 
     /**
@@ -122,6 +112,17 @@ public class DataModel implements LocationListener {
         return nearbyPOIs.size();
     }
 
+    /*
+     * Set the last location of the GPS Tracking.
+     * Note: Only use this at the initializing in the beginning.
+     */
+    public void setLastLocation(Location lastLocation) {
+        if (startLocation == null) {
+            startLocation = lastLocation;
+        }
+        this.lastLocation = lastLocation;
+    }
+
     /**
      * Return the last known location.
      *
@@ -133,24 +134,51 @@ public class DataModel implements LocationListener {
 
     @Override
     public void onLocationChanged(Location location) {
-        Log.d(getClass().toString(), "Changed Location: " + location.toString());
-        lastLocation = location;
+        Log.d(getClass().toString(), "Moved to " + location.toString());
+
+        if (lastLocation != null) {
+
+            tourStatistics.setWalkedDistance(tourStatistics.getWalkedDistance() + lastLocation.distanceTo(location));
+
+            // Check if any unvisited POI was reached.
+            for (POI poi : nearbyPOIs) {
+                Location poiLocation = new Location(LocationManager.GPS_PROVIDER);
+                poiLocation.setLongitude(poi.getLongitude());
+                poiLocation.setLatitude(poi.getLatitude());
+                float delta = location.distanceTo(poiLocation);
+                if (delta <= POI_NOTIFY_RANGE) {
+                    Log.d("GPS", "POI " + poi.getName() + " reached.");
+                    for (ITourTracker tourTracker : tourTrackers) {
+                        tourTracker.OnPOIReached(poi);
+                    }
+                    tourStatistics.addVisitedPOI(poi);
+                }
+            }
+
+            // Check if tour end was reached.
+            Log.d("DBG", String.valueOf(tourStatistics.getVisitedPOIs()) + " / " + getSelectedPOIs().size());
+            if (tourStatistics.getVisitedPOIs() == getSelectedPOIs().size()) {
+                if (!tourConfiguration.isRoundTour() || (tourConfiguration.isRoundTour() && location.distanceTo(startLocation) <= POI_NOTIFY_RANGE)) {
+                    Log.d("GPS", "Tour end was reached.");
+                    for (ITourTracker tourTracker : tourTrackers) {
+                        tourTracker.OnTourEnd();
+                    }
+                }
+            }
+
+            // Update the last known location.
+            lastLocation = location;
+        }
     }
 
     @Override
-    public void onStatusChanged(String s, int i, Bundle bundle) {
-
-    }
+    public void onStatusChanged(String s, int i, Bundle bundle) {}
 
     @Override
-    public void onProviderEnabled(String s) {
-
-    }
+    public void onProviderEnabled(String s) {}
 
     @Override
-    public void onProviderDisabled(String s) {
-
-    }
+    public void onProviderDisabled(String s) {}
 
     public TourConfiguration getTourConfiguration() {
         return tourConfiguration;

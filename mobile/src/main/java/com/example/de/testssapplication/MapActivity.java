@@ -39,6 +39,7 @@ import java.util.List;
 
 import model.DataModel;
 import model.DirectionHelper;
+import model.ITourTracker;
 import model.POI;
 import network.WatchNotifier;
 import okhttp3.OkHttpClient;
@@ -46,7 +47,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 
-public class MapActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class MapActivity extends AppCompatActivity implements OnMapReadyCallback, ITourTracker {
 
     GeoDataClient mGeoDataClient;
     PlaceDetectionClient mPlaceDetectionClient;
@@ -65,6 +66,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
+        DataModel.getInstance().tourTrackers.add(this);
 
         WatchNotifier.setGoogleApiClient(new GoogleApiHelper(this).getGoogleApiClient());
         String direction = "rechts";
@@ -91,8 +93,15 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     }
 
-    //private String access_token;
+    @Override
+    public void OnTourEnd() {
+        //TODO
+    }
 
+    @Override
+    public void OnPOIReached(POI poi) {
+        //TODO
+    }
     /**
      * Sets up the options menu.
      *
