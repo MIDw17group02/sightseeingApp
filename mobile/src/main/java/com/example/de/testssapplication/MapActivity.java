@@ -36,6 +36,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.List;
 
+import model.DataModel;
 import model.DirectionHelper;
 import model.POI;
 import network.WatchNotifier;
@@ -85,6 +86,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
         SupportMapFragment map = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         map.getMapAsync(this);
+
+        DataModel.getInstance().getTourStatistics().setWalkedDuration(System.currentTimeMillis());
 
     }
 

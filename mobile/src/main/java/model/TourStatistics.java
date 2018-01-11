@@ -10,12 +10,12 @@ import java.util.List;
 public class TourStatistics {
 
     private double walkedDistance;
-    private double walkedDuration;
+    private long walkedDuration;
     private List<POI> seenPOIs;
 
     public TourStatistics() {
         walkedDistance = 0.0;
-        walkedDuration = 0.0;
+        walkedDuration = 0;
         seenPOIs = new LinkedList<>();
     }
 
@@ -27,11 +27,11 @@ public class TourStatistics {
         this.walkedDistance = walkedDistance;
     }
 
-    public double getWalkedDuration() {
+    public long getWalkedDuration() {
         return walkedDuration;
     }
 
-    public void setWalkedDuration(double walkedDuration) {
+    public void setWalkedDuration(long walkedDuration) {
         this.walkedDuration = walkedDuration;
     }
 

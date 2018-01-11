@@ -7,6 +7,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import java.util.concurrent.TimeUnit;
+
 import model.DataModel;
 import model.TourStatistics;
 
@@ -40,7 +42,11 @@ public class EndScreenActivity extends AppCompatActivity {
         });
 
         TourStatistics tourStatistics = DataModel.getInstance().getTourStatistics();
-        durationText.setText(String.valueOf(tourStatistics.getWalkedDuration()) + " min");
+        tourStatistics.setWalkedDuration(System.currentTimeMillis() - tourStatistics.getWalkedDuration());
+        long time = tourStatistics.getWalkedDuration();
+        durationText.setText(String.valueOf(TimeUnit.MILLISECONDS.toHours(time)) + " Stunden, "
+        + String.valueOf(TimeUnit.MILLISECONDS.toMinutes(time)) + " Minuten, "
+        + String.valueOf(TimeUnit.MILLISECONDS.toSeconds(time)) + " Sekunden");
         distanceText.setText(String.valueOf(tourStatistics.getWalkedDistance()) + " km");
         visitedPOIsText.setText(String.valueOf(tourStatistics.getVisitedPOIs()));
     }

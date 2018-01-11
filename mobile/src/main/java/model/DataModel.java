@@ -46,6 +46,13 @@ public class DataModel implements LocationListener {
     public boolean setLastKnownLocation(Location location) {
         if (location != null) {
             Log.e(getClass().getSimpleName(),location.toString());
+            tourStatistics.setWalkedDistance(tourStatistics.getWalkedDistance() + lastLocation.distanceTo(location));
+            for (POI poi : nearbyPOIs) {
+                if (poi.getLongitude() == location.getLongitude() && poi.getLatitude() == location.getLatitude()) {
+                    tourStatistics.addVisitedPOI(poi);
+                    break;
+                }
+            }
             this.lastLocation = location;
             return true;
         }
