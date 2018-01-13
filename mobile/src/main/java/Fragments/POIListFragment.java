@@ -19,6 +19,8 @@ import android.widget.TextView;
 
 import com.example.de.testssapplication.R;
 
+import org.w3c.dom.Text;
+
 import java.text.DecimalFormat;
 
 import model.DataModel;
@@ -54,6 +56,11 @@ public class POIListFragment extends Fragment {
             }
         });
 
+        if (model.getPOIcount() == 0) {
+            final TextView noPOIInfo = (TextView) rootView.findViewById(R.id.noPOIText);
+            noPOIInfo.setVisibility(View.VISIBLE);
+        }
+
         return rootView;
     }
 
@@ -70,6 +77,7 @@ public class POIListFragment extends Fragment {
             if (fab != null) {
                 fab.setForeground(getResources().getDrawable(model.getSelectedPOIs().size() == 0 ? R.drawable.right_arrow_red : R.drawable.right_arrow));
             }
+
             return model.getPOIcount();
         }
 

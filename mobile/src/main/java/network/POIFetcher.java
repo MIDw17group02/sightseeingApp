@@ -75,7 +75,6 @@ public class POIFetcher {
 
         try {
             response = client.newCall(request).execute();
-            //TODO React to ZERO RESULTS
             JSONObject jsonObjectToken = new JSONObject(response.body().string().trim());
             Log.d("POIFetcher", "Main request response: " + jsonObjectToken.toString());
             JSONArray places = jsonObjectToken.getJSONArray("results");
@@ -203,7 +202,6 @@ public class POIFetcher {
 
                 try {
                     response = wikiClient.newCall(request).execute();
-                    //TODO React to ZERO RESULTS
                     JSONArray jsonObjectToken = new JSONArray(response.body().string().trim());
                     Log.d("Phone-WikiFetch", "JSON-Result: " + jsonObjectToken.toString());
                     String infoText = jsonObjectToken.getJSONArray(2).optString(0);
