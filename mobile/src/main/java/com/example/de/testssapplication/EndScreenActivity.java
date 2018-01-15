@@ -44,9 +44,30 @@ public class EndScreenActivity extends AppCompatActivity {
         TourStatistics tourStatistics = DataModel.getInstance().getTourStatistics();
         tourStatistics.setWalkedDuration(System.currentTimeMillis() - tourStatistics.getWalkedDuration());
         long time = tourStatistics.getWalkedDuration();
-        String hours = TimeUnit.MILLISECONDS.toHours(time) != 0 ? TimeUnit.MILLISECONDS.toHours(time) + " Stunden " : "";
-        String minutes = TimeUnit.MILLISECONDS.toMinutes(time) != 0 ? (TimeUnit.MILLISECONDS.toMinutes(time)-TimeUnit.MILLISECONDS.toHours(time)*60) + " Minuten " : "";
-        String seconds = TimeUnit.MILLISECONDS.toSeconds(time) != 0 ? (TimeUnit.MILLISECONDS.toSeconds(time)-TimeUnit.MILLISECONDS.toMinutes(time)*60) + " Sekunden" : "";
+        String hours = "";
+        long hourValue = TimeUnit.MILLISECONDS.toHours(time);
+        if (hourValue != 0) {
+            hours += hourValue + " Stunde";
+            if (hourValue != 1) {
+                hours += "n";
+            }
+        }
+        String minutes = "";
+        long minuteValue = TimeUnit.MILLISECONDS.toMinutes(time) - TimeUnit.MILLISECONDS.toHours(time) * 60;
+        if (minuteValue != 0) {
+            minutes += " " + minuteValue + " Minute";
+            if (minuteValue != 1) {
+                minutes += "n";
+            }
+        }
+        String seconds = "";
+        long secondValue = TimeUnit.MILLISECONDS.toSeconds(time) - TimeUnit.MILLISECONDS.toMinutes(time) * 60;
+        if (secondValue != 0 && hourValue == 0) {
+            seconds += " " + secondValue + " Sekunde";
+            if (secondValue != 1) {
+                seconds += "n";
+            }
+        }
         durationText.setText(hours + minutes + seconds);
         distanceText.setText(String.valueOf(String.format("%.2f", (tourStatistics.getWalkedDistance()/1000.0))) + " km");
         visitedPOIsText.setText(String.valueOf(tourStatistics.getVisitedPOIs()));

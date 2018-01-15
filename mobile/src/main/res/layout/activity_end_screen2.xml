@@ -6,6 +6,19 @@
     android:layout_height="match_parent"
     tools:context="com.example.de.testssapplication.EndScreenActivity">
 
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:scaleType="centerInside"
+        android:adjustViewBounds="true"
+        android:background="@drawable/endscreen"
+        app:layout_constraintBottom_toTopOf="@+id/button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TableLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
