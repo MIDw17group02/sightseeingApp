@@ -75,8 +75,8 @@ public class POIFetcher {
 
         try {
             response = client.newCall(request).execute();
-            //TODO React to ZERO RESULTS
             JSONObject jsonObjectToken = new JSONObject(response.body().string().trim());
+            Log.d("POIFetcher", "Main request response: " + jsonObjectToken.toString());
             JSONArray places = jsonObjectToken.getJSONArray("results");
 
             for (int i = 0; i < places.length(); i++) {
@@ -111,7 +111,6 @@ public class POIFetcher {
 
             @Override
             public void onResponse(Call call, Response response) {
-                //TODO React to ZERO RESULTS
                 Log.d("POIFETCHER", response.toString());
                 JSONObject jsonObjectToken = null;
                 try {
@@ -190,7 +189,7 @@ public class POIFetcher {
             }
 
             //TODO wikipedia api fetch -> Problem: Oft keine oder mehrere Einträge
-            if (poiJSON.has("name")) {
+            /*if (poiJSON.has("name")) {
                 String name = poiJSON.getString("name");
                 name = name.replaceAll(" ", "+");
                 String wikiURL = "https://de.wikipedia.org/w/api.php?action=opensearch&search=" + name + "&limit=1&namespace=0&format=json";
@@ -203,7 +202,6 @@ public class POIFetcher {
 
                 try {
                     response = wikiClient.newCall(request).execute();
-                    //TODO React to ZERO RESULTS
                     JSONArray jsonObjectToken = new JSONArray(response.body().string().trim());
                     Log.d("Phone-WikiFetch", "JSON-Result: " + jsonObjectToken.toString());
                     String infoText = jsonObjectToken.getJSONArray(2).optString(0);
@@ -214,7 +212,7 @@ public class POIFetcher {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-            }
+            }*/
 
         } catch (JSONException e) {
             Log.d("getPOIFromJSON", "Parsing error!");

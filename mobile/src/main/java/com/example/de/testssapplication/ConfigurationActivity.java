@@ -22,6 +22,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
 import android.widget.Spinner;
 import android.widget.Switch;
 
@@ -36,12 +37,16 @@ import com.google.android.gms.wearable.NodeApi;
 import com.google.android.gms.wearable.Wearable;
 
 import model.DataModel;
+import model.TourConfiguration;
 import network.POIFetcher;
 import network.WatchNotifier;
 
 public class ConfigurationActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks {
     //Log-Tag
     public static String TAG = "Phone-Configuration";
+
+    private final int GPS_UPDATE_MIN_MILLIS = 5000;
+    private final int GPS_UPDATE_MIN_METERS = 10;
 
     private FloatingActionButton nextButton;
     private Switch switchRound;
@@ -66,11 +71,13 @@ public class ConfigurationActivity extends AppCompatActivity implements GoogleAp
         StrictMode.setThreadPolicy(policy);
         model = DataModel.getInstance();
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
+            ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
             // Request Permissions from User
-            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, location_permission_request);
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION}, location_permission_request);
+        } else {
+            setUpGPS();
         }
 
         setTitle(getString(R.string.title_activity_configuration));
@@ -78,13 +85,13 @@ public class ConfigurationActivity extends AppCompatActivity implements GoogleAp
         progressDialog = new ProgressDialog(this);
 
         switchRound = (Switch) findViewById(R.id.switch_roundtour);
-        /*switchRound.setText(getString(R.string.roundOff));
         switchRound.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
-                switchRound.setText(checked ? getString(R.string.roundOn) : getString(R.string.roundOff));
+                model.getTourConfiguration().setRoundTour(checked);
+                //switchRound.setText(checked ? getString(R.string.roundOn) : getString(R.string.roundOff));
             }
-        });*/
+        });
 
         tempoSpinner = (Spinner) findViewById(R.id.spinner_tempo);
         final ArrayAdapter<CharSequence> sp_adapter_1 = ArrayAdapter.createFromResource(this, R.array.tempo_array, R.layout.double_spinner_item);
@@ -124,12 +131,15 @@ public class ConfigurationActivity extends AppCompatActivity implements GoogleAp
             public void onClick(View view) {
 
                 final int radius;
+                // Some fine tuning, taking into account, that the route can be longer when calculated.
+                final int lenDivisor = 2;
                 // Distance[km] = (Speed[km/h]- 1 km/h + Tempo[1] * 1 km/h) * Time[h]
-                double distance = (model.getTourConfiguration().getAvgWalkSpeed() + (double) model.getTourConfiguration().getTempo() - 1.0) * model.getTourConfiguration().getDuration();
-                if (switchRound.isActivated()) {
-                    radius = (int) (distance * 1000.0 / 2.0);
+                TourConfiguration configuration = model.getTourConfiguration();
+                double distance = (configuration.getAvgWalkSpeed() + (double) configuration.getTempo() - 1.0) * configuration.getDuration();
+                if (configuration.isRoundTour()) {
+                    radius = (int) (distance * 1000.0 / 2.0) / lenDivisor;
                 } else {
-                    radius = (int) (distance * 1000.0);
+                    radius = (int) (distance * 1000.0) / lenDivisor;
                 }
 
                 progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
@@ -144,10 +154,8 @@ public class ConfigurationActivity extends AppCompatActivity implements GoogleAp
                         if (model.getLastLocation() != null) {
                             POIFetcher.requestPOIs(getApplicationContext(), radius);
                         } else {
-                            POIFetcher.requestPOIs(getApplicationContext(),
-                                    52.3758916,
-                                    9.7320104,
-                                    radius);
+                            //POIFetcher.requestPOIs(getApplicationContext(),52.3758916,9.7320104,radius);
+                            Log.e(TAG, "GPS Position Error");
                         }
                         progressDialog.dismiss();
                         Intent i = new Intent(getApplicationContext(), POISelectorActivity.class);
@@ -178,23 +186,31 @@ public class ConfigurationActivity extends AppCompatActivity implements GoogleAp
                 }
             }
         });
+    }
 
+    /**
+     * Set up the GPS Tracking.
+     * Do not call this method, unless permissions have been granted already.
+     */
+    @SuppressLint("MissingPermission")
+    private void setUpGPS() {
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, GPS_UPDATE_MIN_MILLIS, GPS_UPDATE_MIN_METERS, model);
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         new GetCurrentLocationTask().execute();
     }
 
-
-    @SuppressLint("MissingPermission")
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
 
+        for (int i = 0; i < permissions.length;i++)
+        Log.d(TAG, permissions[i] + " " + grantResults[i] + " should be " + PackageManager.PERMISSION_GRANTED);
+
         switch (requestCode) {
             case location_permission_request:
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (grantResults.length > 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
                     // Permissions were granted continue with the app.
-                    LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 10, model);
-                    new GetCurrentLocationTask().execute();
+                    setUpGPS();
                 } else {
                     // Permissions were denied. Show dialog and close app.
                     AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -252,9 +268,14 @@ public class ConfigurationActivity extends AppCompatActivity implements GoogleAp
         @Override
         protected void onPostExecute(Location location) {
             if (location != null)
-                model.setLastKnownLocation(location);
+                model.setLastLocation(location);
             else
                 new GetCurrentLocationTask().execute();
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        return;
     }
 }

@@ -6,10 +6,17 @@
     android:layout_height="match_parent"
     tools:context="com.example.de.testssapplication.POISelectorActivity">
 
-    <!--<TextView
-       android:text="TAB11"
-       android:layout_width="wrap_content"
-       android:layout_height="wrap_content" />-->
+    <TextView
+        android:id="@+id/noPOIText"
+        android:text="@string/error_no_pois_found"
+        android:textSize="@dimen/button_text_size"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
     <GridView
         android:id="@+id/poi_grid_list"

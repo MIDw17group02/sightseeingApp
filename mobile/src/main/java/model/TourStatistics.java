@@ -4,18 +4,19 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Created by de on 17.12.2017.
+ * This class wraps up the statistics for the current Tour.
  */
-
 public class TourStatistics {
 
+    // Walked distance so far in meters.
     private double walkedDistance;
-    private double walkedDuration;
+    // Tour duration til now in milliseconds since 1970.
+    private long walkedDuration;
     private List<POI> seenPOIs;
 
     public TourStatistics() {
         walkedDistance = 0.0;
-        walkedDuration = 0.0;
+        walkedDuration = 0;
         seenPOIs = new LinkedList<>();
     }
 
@@ -27,11 +28,11 @@ public class TourStatistics {
         this.walkedDistance = walkedDistance;
     }
 
-    public double getWalkedDuration() {
+    public long getWalkedDuration() {
         return walkedDuration;
     }
 
-    public void setWalkedDuration(double walkedDuration) {
+    public void setWalkedDuration(long walkedDuration) {
         this.walkedDuration = walkedDuration;
     }
 

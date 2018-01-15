@@ -14,15 +14,17 @@ public class POI implements Comparable {
     private String name;
     private double longitude;
     private double latitude;
-    private double rating; // Google rating from 0.0 to 5.0 stars.
+    private double rating;   // Google rating from 0.0 to 5.0 stars.
     private String vicinity; // = Address of the poi
-    private Bitmap photo; // Bitmap of a photo that is included in the google place.
+    private Bitmap photo;    // Bitmap of a photo that is queried from the google place.
 
     private String id;
     private String place_id;
     private String reference;
 
     private String infoText;
+
+    private boolean visited = false;
 
     private int index;
 
@@ -148,6 +150,14 @@ public class POI implements Comparable {
 
     public void setInfoText(String infoText) {
         this.infoText = infoText;
+    }
+
+    public boolean isVisited() {
+        return visited;
+    }
+
+    public void setVisited(boolean visited) {
+        this.visited = visited;
     }
 
     @Override

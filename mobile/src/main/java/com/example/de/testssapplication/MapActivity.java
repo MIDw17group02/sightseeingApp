@@ -34,9 +34,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
+import model.DataModel;
 import model.DirectionHelper;
+import model.ITourTracker;
 import model.POI;
 import network.WatchNotifier;
 import okhttp3.OkHttpClient;
@@ -44,7 +47,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 
-public class MapActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class MapActivity extends AppCompatActivity implements OnMapReadyCallback, ITourTracker {
 
     GeoDataClient mGeoDataClient;
     PlaceDetectionClient mPlaceDetectionClient;
@@ -54,16 +57,16 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private static final String TAG = MapActivity.class.getSimpleName();
     // Used for selecting the current place.
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
-    private static final int DEFAULT_ZOOM = 10;
+    private static final int DEFAULT_ZOOM = 14;
     private Location mLastKnownLocation;
 
     private DirectionHelper directionHelper;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
+        DataModel.getInstance().tourTrackers.add(this);
 
         WatchNotifier.setGoogleApiClient(new GoogleApiHelper(this).getGoogleApiClient());
         String direction = "rechts";
@@ -86,10 +89,41 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         SupportMapFragment map = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         map.getMapAsync(this);
 
+        DataModel.getInstance().getTourStatistics().setWalkedDuration(System.currentTimeMillis());
+
     }
 
-    //private String access_token;
+    @Override
+    public void OnTourEnd() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.dialog_finish_title);
+        builder.setMessage(R.string.dialog_want_to_finish);
+        builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                finish();
+                Intent intent = new Intent(getApplicationContext(), EndScreenActivity.class);
+                startActivity(intent);
+            }
+        });
+        builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
 
+        AlertDialog dialog = builder.create();
+        dialog.setCancelable(false);
+        dialog.show();
+    }
+
+    @Override
+    public void OnPOIReached(POI poi) {
+        //TODO send info to watch
+        //WatchNotifier.sendInfoData(poi.getPhoto(),poi.getName(),poi.getInfoText());
+        Toast.makeText(this,poi.getName(),Toast.LENGTH_LONG).show();
+    }
     /**
      * Sets up the options menu.
      *
@@ -156,6 +190,14 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         List<POI> pois = directionHelper.makeTours();
         directionHelper.addPolylineDirection(this, pois);
 
+        mLastKnownLocation = DataModel.getInstance().getLastLocation();
+        Log.d("Map", "StartLoc " + mLastKnownLocation.toString());
+        if (mLastKnownLocation != null) {
+            // Set the camera zoom.
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                    new LatLng(mLastKnownLocation.getLatitude(),
+                    mLastKnownLocation.getLongitude()), 12));
+        }
     }
 
     /**

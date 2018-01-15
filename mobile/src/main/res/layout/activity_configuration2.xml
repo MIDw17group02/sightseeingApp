@@ -33,7 +33,7 @@
                 android:id="@+id/switch_roundtour"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingRight="15dp"
+                android:paddingRight="22dp"
                 android:layout_gravity="right"
                 android:maxLines="1"
                 android:textSize="@dimen/configuration_activity_text_size" />
