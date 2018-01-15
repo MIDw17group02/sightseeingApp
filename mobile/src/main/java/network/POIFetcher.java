@@ -89,7 +89,6 @@ public class POIFetcher {
                 JSONObject placeJSON = places.getJSONObject(i);
                 Log.d("TAG", placeJSON.toString());
                 POI poi = getPOIFromJSON(context, placeJSON);
-                if(poi == null) return; //kein WikipediaText gefunden -> nicht relevant
                 Log.d("POIFetcher", "Fetched POI " + poi.getName());
 
                 Location poiLoc = new Location("poiLoc");
@@ -98,7 +97,7 @@ public class POIFetcher {
                 poi.setDistanceToStart(mLoc.distanceTo(poiLoc)/1000);
 
                 DataModel model = DataModel.getInstance();
-                if (poi.getPhoto() != null) // Better for Showcase
+                if (poi.getPhoto() != null && poi.getInfoText() != null) // Better for Showcase
                     model.addPOI(poi);
             }
 
@@ -205,8 +204,6 @@ public class POIFetcher {
 
                 while((!name.equals("")) && !gotResult) {
                     String wikiURL = "https://de.wikipedia.org/w/api.php?action=opensearch&search=" + name + "&limit=2&namespace=0&redirects=resolve&format=json";
-                    //Log.d("Phone-WikiFetch", "Try fetching...: " + name);
-
                     OkHttpClient wikiClient = new OkHttpClient();
                     final Request request = new Request.Builder().url(wikiURL).build();
                     Response response = null;
@@ -215,7 +212,6 @@ public class POIFetcher {
                         response = wikiClient.newCall(request).execute();
                         //TODO React to ZERO RESULTS
                         JSONArray jsonObjectToken = new JSONArray(response.body().string().trim());
-                        //Log.d("Phone-WikiFetch", "JSON-Result: " + jsonObjectToken.toString());
                         JSONArray infoTextAarray = jsonObjectToken.getJSONArray(2);
                         if (infoTextAarray.optString(1).equals("")) {
                             //wenn nur ein Eintrag vorhanden ist
@@ -223,20 +219,11 @@ public class POIFetcher {
                         } else {
                             //wenn mehrer Einträge vorhanden sind -> immer Begriffserklärungsseite?!
                             infoText = infoTextAarray.optString(1);
-                        /*if(infoTextAarray.optString(0).endsWith("bezeichnet:")) {
-                            //wenn mind 2 Einträge vorhanden und der erste mit "bezeichnet:" endet
-                            Log.d("Phone-WikiFetch", "Begriffserklärungsseite...");
-                            infoText =  infoTextAarray.optString(1);
-                        } else {
-                            //wenn mind 2 Einträge vorhanden, aber keine Begriffserklärungsseite
-                            infoText = infoTextAarray.optString(0);
-                        }*/
                         }
                         if (infoText.equals("")) {
-                            //Log.d("Phone-WikiFetch", "Info Text is null...");
-                            //infoText = "Keine Informationen vorhanden...";
-                            //return null; // Diese Sehenswürdigkeit ist nicht relevant!
+                            //kein InfoText zum Suchbegriff gefunden
                             if(!name.contains(" ")) {
+                                //kein Leerzeichen mehr vorhanden
                                 name = "";
                             } else {
                                 String n[] = name.split(" ");
@@ -255,14 +242,23 @@ public class POIFetcher {
                             gotResult = true;
                         }
 
-                        result.setInfoText(infoText);
+
                     } catch (JSONException e) {
                         e.printStackTrace();
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                 }
-                Log.d("Phone-WikiFetch", "InfoText zu " + name + ": " + infoText);
+                if(gotResult == true) {
+                    Log.d("Phone-WikiFetch", "InfoText zu " + name + ": " + infoText);
+                    result.setInfoText(infoText);
+                }
+                else {
+                    Log.d("Phone-WikiFetch", "No Info Found for " + name);
+                    result.setInfoText(null);
+                    //those will be deleted, by setting null
+                }
+
             }
 
         } catch (JSONException e) {
