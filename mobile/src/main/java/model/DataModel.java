@@ -26,6 +26,7 @@ public class DataModel implements LocationListener {
     private TourStatistics tourStatistics;
 
     private List<POI> nearbyPOIs;
+    private List<POI> visitedPOIs;
     private Location lastLocation;
 
     private Location startLocation = null;
@@ -38,6 +39,7 @@ public class DataModel implements LocationListener {
         tourStatistics = new TourStatistics();
         nearbyPOIs = new ArrayList<>();
         tourTrackers = new ArrayList<>();
+        visitedPOIs = new ArrayList<>();
     }
 
     /*
@@ -75,6 +77,15 @@ public class DataModel implements LocationListener {
             return nearbyPOIs.get(index);
         }
         return null;
+    }
+
+
+    public List<POI> getVisitedPOIs(){
+        return visitedPOIs;
+    }
+
+    public void setVisitedPOIs(List<POI> other){
+        visitedPOIs = other;
     }
 
     public void clearPOIs() {

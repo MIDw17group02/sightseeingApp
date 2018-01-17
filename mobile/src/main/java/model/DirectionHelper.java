@@ -3,9 +3,13 @@ package model;
 
 import android.content.Context;
 import android.content.pm.LabeledIntent;
+import android.location.Location;
 import android.util.Log;
 
 import com.example.de.testssapplication.R;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.PlaceBuffer;
+import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.JointType;
 import com.google.android.gms.maps.model.LatLng;
@@ -16,7 +20,6 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.maps.model.RoundCap;
 import com.javadocmd.simplelatlng.LatLngTool;
 import com.javadocmd.simplelatlng.util.LengthUnit;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -35,7 +38,7 @@ public class DirectionHelper {
     private static DirectionHelper helper;
     private DataModel model;
     private GoogleMap mMap;
-
+    private String className = getClass().getSimpleName();
     private static final int COLOR_GREEN_ARGB = 0xff388E3C;
     private static final int POLYLINE_STROKE_WIDTH_PX = 12;
 
@@ -43,6 +46,7 @@ public class DirectionHelper {
         client = new OkHttpClient();
         model = DataModel.getInstance();
         mMap = map;
+
     }
 
     public static DirectionHelper getInstance(GoogleMap map){
@@ -155,4 +159,95 @@ public class DirectionHelper {
         pois.remove(currentPoi);
         findNext(currentPoi, tour, pois);
     }
+
+    /**
+     * check if poi is reached
+     * @param poi
+     * @return
+     */
+    private boolean isPOIReached(POI poi){
+        Location lastKnownLocation = model.getLastLocation();
+        if (LatLngTool.distance(new com.javadocmd.simplelatlng.LatLng(lastKnownLocation.getLatitude(),
+                lastKnownLocation.getLongitude()),
+                new com.javadocmd.simplelatlng.LatLng(poi.getLatitude(), poi.getLongitude()),
+                // todo distance to poi
+                LengthUnit.METER) <= 10){
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * update visited pois
+     */
+    public void updateVisitedPOIs(){
+        Location lastKnownLocation = model.getLastLocation();
+        List<POI> selectedPOIs = model.getSelectedPOIs();
+        List<POI> visitedPOIs = model.getVisitedPOIs();
+        for (POI poi : selectedPOIs){
+            if (isPOIReached(poi) && !visitedPOIs.contains(poi)){
+                visitedPOIs.add(poi);
+                model.setVisitedPOIs(visitedPOIs);
+            }
+        }
+    }
+
+    /**
+     * calculate the next direction to show on both phone and watch screen
+     * @return
+     */
+    public String nextDirection(Context context){
+        Location lastKnownLocation = model.getLastLocation();
+        if (lastKnownLocation == null) return "undefined";
+        List<POI> selectedPOIs = model.getSelectedPOIs();
+        List<POI> visitedPOIs = model.getVisitedPOIs();
+        POI next = selectedPOIs.get(0);
+        //determine next poi to visit
+        for (POI poi: selectedPOIs){
+            if (!visitedPOIs.contains(poi)){
+                next = poi;
+            }
+        }
+        String direction_url = "https://maps.googleapis.com/maps/api/directions/json?origin="+
+                lastKnownLocation.getLatitude()+","+lastKnownLocation.getLongitude()+"&destination="+next.getLatitude()+","+next.getLongitude()+"&key="+
+                context.getString(R.string.google_maps_key)+"&mode=walking";
+        Request request = new Request.Builder().url(direction_url).build();
+        Response response = null;
+        JSONObject resp = null;
+        JSONArray routesJsonArray = null;
+        try {
+            response = client.newCall(request).execute();
+            resp = new JSONObject(response.body().string().trim());
+            routesJsonArray = resp.getJSONArray("routes");
+            JSONObject route =  routesJsonArray.getJSONObject(0);
+            JSONArray steps = route.getJSONArray("legs").
+                    getJSONObject(0).getJSONArray("steps");
+            String instruction = steps.getJSONObject(0).getString("html_instructions");
+            String distanceObject = steps.getJSONObject(0).getJSONObject("distance").getString("text");
+            instruction = (instruction+" in "+distanceObject).replace("<b>","").replace("</b>","");
+            Log.e(className, instruction);
+            return instruction;
+            // todo ????
+            /*
+            if (instruction.contains("Left") || instruction.contains("right")){
+                return "left";
+            }
+            else if (instruction.contains("Right") || instruction.contains("right")){
+                return "right";
+            }
+            else if (instruction.contains("Head") || instruction.contains("head") ){
+                return "head";
+            }
+            else{
+                return "undefined";
+            }
+            */
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return "undefined";
+    }
+
 }

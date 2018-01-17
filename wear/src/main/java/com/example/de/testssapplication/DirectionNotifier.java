@@ -31,7 +31,7 @@ public class DirectionNotifier extends WearableActivity {
         ditanceView = (TextView) findViewById(R.id.distance);
 
         Intent intent = getIntent();
-        if( intent.hasExtra("dir") && intent.hasExtra("dis") ) {
+        if (intent.hasExtra("dir") && intent.hasExtra("dis")) {
             direction = intent.getStringExtra("dir");
             distance = intent.getStringExtra("dis");
             SharedPreferences.Editor editor = getPreferences(MODE_PRIVATE).edit();
@@ -49,13 +49,19 @@ public class DirectionNotifier extends WearableActivity {
         }
 
         //set Image according direction
-        if(direction != "undefined") {
+        if (!direction.equals("undefined")) {
             Log.d(TAG, "Setting image according direction \"" + direction + "\"");
-            switch(direction) {
-                case "links" : directionImage.setImageResource(R.drawable.arrow_left);
+            switch (direction) {
+                case "links":
+                    directionImage.setImageResource(R.drawable.arrow_left);
                     break;
-                case "rechts" : directionImage.setImageResource(R.drawable.arrow_right);
-                default :
+                case "rechts":
+                    directionImage.setImageResource(R.drawable.arrow_right);
+                    break;
+                case "head":
+                    // todo
+                    break;
+                default:
                     break;
             }
 

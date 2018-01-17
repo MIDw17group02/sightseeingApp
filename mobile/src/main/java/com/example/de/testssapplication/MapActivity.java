@@ -29,6 +29,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
+import android.os.Handler;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -59,7 +61,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private static final int DEFAULT_ZOOM = 14;
     private Location mLastKnownLocation;
-
+    private Handler handler = new Handler();
     private DirectionHelper directionHelper;
 
     @Override
@@ -91,7 +93,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
         DataModel.getInstance().getTourStatistics().setWalkedDuration(System.currentTimeMillis());
 
+
     }
+
 
     @Override
     public void OnTourEnd() {
@@ -122,8 +126,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     public void OnPOIReached(POI poi) {
         //TODO send info to watch
         //WatchNotifier.sendInfoData(poi.getPhoto(),poi.getName(),poi.getInfoText());
-        Toast.makeText(this,poi.getName(),Toast.LENGTH_LONG).show();
+        Toast.makeText(this, poi.getName(), Toast.LENGTH_LONG).show();
     }
+
     /**
      * Sets up the options menu.
      *
@@ -196,8 +201,25 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             // Set the camera zoom.
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                     new LatLng(mLastKnownLocation.getLatitude(),
-                    mLastKnownLocation.getLongitude()), 12));
+                            mLastKnownLocation.getLongitude()), 12));
         }
+
+        Runnable runnableCode = new Runnable() {
+            @Override
+            public void run() {
+                // Do something here on the main thread
+                // Repeat this the same runnable code block again another 30 seconds
+                // 'this' is referencing the Runnable object
+                directionHelper.updateVisitedPOIs();
+                String nextInstruction = directionHelper.nextDirection(MapActivity.this);
+                Log.e(getClass().getSimpleName(), nextInstruction);
+                WatchNotifier.sendNavData(nextInstruction, "");
+                Toast.makeText(MapActivity.this, nextInstruction, 3*1000).show();
+                handler.postDelayed(this, 10 * 1000);
+            }
+        };
+// Start the initial runnable task by posting through the handler
+        handler.post(runnableCode);
     }
 
     /**
@@ -315,5 +337,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         dialog.setCancelable(false);
         dialog.show();
     }
+
+
 }
 
