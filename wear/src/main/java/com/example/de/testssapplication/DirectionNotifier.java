@@ -38,7 +38,9 @@ public class DirectionNotifier extends WearableActivity {
             editor.putString("direction", direction);
             editor.putString("distance", distance);
             editor.apply();
-            directionView.setText(direction);
+            if(direction.length() > 7) {
+                directionView.setText(direction);
+            }
             ditanceView.setText(distance);
         } else {
             SharedPreferences prefs = getPreferences(MODE_PRIVATE);
@@ -52,14 +54,29 @@ public class DirectionNotifier extends WearableActivity {
         if (!direction.equals("undefined")) {
             Log.d(TAG, "Setting image according direction \"" + direction + "\"");
             switch (direction) {
-                case "links":
-                    directionImage.setImageResource(R.drawable.arrow_left);
+                case "ahead":
+                    directionImage.setImageResource(R.drawable.ic_ahead);
                     break;
-                case "rechts":
-                    directionImage.setImageResource(R.drawable.arrow_right);
+                case "back":
+                    directionImage.setImageResource(R.drawable.ic_back);
                     break;
-                case "head":
-                    // todo
+                case "hleft":
+                    directionImage.setImageResource(R.drawable.ic_hleft);
+                    break;
+                case "hright":
+                    directionImage.setImageResource(R.drawable.ic_hright);
+                    break;
+                case "left":
+                    directionImage.setImageResource(R.drawable.ic_left);
+                    break;
+                case "right":
+                    directionImage.setImageResource(R.drawable.ic_right);
+                    break;
+                case "sleft":
+                    directionImage.setImageResource(R.drawable.ic_sleft);
+                    break;
+                case "sright":
+                    directionImage.setImageResource(R.drawable.ic_sright);
                     break;
                 default:
                     break;
