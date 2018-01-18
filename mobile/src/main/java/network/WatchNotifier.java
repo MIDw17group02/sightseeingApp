@@ -42,6 +42,7 @@ public class WatchNotifier{
     //Schicke Sehenswürdigkeit Info
     public static void sendInfoData(Bitmap bitmap, String name, String info){
         Asset asset = createAssetFromBitmap(bitmap);
+        Log.d("WatchNotifier", "ASSET " + asset);
 
         PutDataMapRequest putDataMapReq = PutDataMapRequest.create(DATA_PATH);
         putDataMapReq.getDataMap().putString("name", name);

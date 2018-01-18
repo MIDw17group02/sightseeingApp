@@ -64,6 +64,7 @@ public class Receiver extends WearableListenerService {
                     for (DataItem item : dataItems) {
                         if ( item.getUri().getPath().equals(DATA_PATH) ) {
                             DataMap dataMap = DataMapItem.fromDataItem(item).getDataMap();
+                            Log.d("WATCH", dataMap.toString());
 
                             //name und info auslesen
                             String name = dataMap.getString("name");
@@ -76,6 +77,8 @@ public class Receiver extends WearableListenerService {
                             Bitmap bitmap = null;
                             try {
                                 bitmap = new MyTask().execute(profileAsset).get();
+                            } catch (IllegalArgumentException e) {
+                                e.printStackTrace();
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             } catch (ExecutionException e) {
@@ -153,7 +156,8 @@ public class Receiver extends WearableListenerService {
         protected Bitmap doInBackground(Asset... params) {
             Asset asset = params[0];
             if (asset == null) {
-                throw new IllegalArgumentException("Asset must be non-null");
+                //throw new IllegalArgumentException("Asset must be non-null");
+                return null;
             }
             ConnectionResult result = mGoogleApiClient.blockingConnect(TIMEOUT_MS, TimeUnit.MILLISECONDS);
             if (!result.isSuccess()) {

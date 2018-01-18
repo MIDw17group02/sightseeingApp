@@ -56,4 +56,7 @@
     <!-- Menu Strings -->
     <string name="menu_exit_tour">Tour Beenden</string>
 
+    <!-- Watch Strings -->
+    <string name="no_info_text">Keine Informationen verfügbar.</string>
+
 </resources>

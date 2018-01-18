@@ -52,6 +52,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     // Used for selecting the current place.
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private static final int DEFAULT_ZOOM = 14;
+    private static final int DIRECTION_DELAY_MILLIS = 20000;
     private Location mLastKnownLocation;
     private Handler handler = new Handler();
     private DirectionHelper directionHelper;
@@ -66,10 +67,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         DataModel.getInstance().tourTrackers.add(this);
 
         WatchNotifier.setGoogleApiClient(new GoogleApiHelper(this).getGoogleApiClient());
-        String direction = "rechts";
-        String distance = "100m";
-        WatchNotifier.sendNavData(direction, distance);
-
 
         //StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         //StrictMode.setThreadPolicy(policy);
@@ -88,7 +85,13 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
         DataModel.getInstance().getTourStatistics().setWalkedDuration(System.currentTimeMillis());
 
-
+        for (POI testPOI : DataModel.getInstance().getSelectedPOIs()) {
+            if (testPOI.getInfoText() != null && testPOI.getName() != null && testPOI.getPhoto() != null) {
+                Log.d("MapActivity", "Sendnonnull " + testPOI.getName());
+                WatchNotifier.sendInfoData(testPOI.getPhoto(), testPOI.getName(), testPOI.getInfoText());
+                break;
+            }
+        }
     }
 
 
@@ -119,8 +122,12 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     @Override
     public void OnPOIReached(POI poi) {
-        WatchNotifier.sendInfoData(poi.getPhoto(),poi.getName(),poi.getInfoText());
         Toast.makeText(this, poi.getName(), Toast.LENGTH_LONG).show();
+        if (poi.getInfoText() != null) {
+            WatchNotifier.sendInfoData(poi.getPhoto(), poi.getName(), getString(R.string.no_info_text));
+        } else {
+            WatchNotifier.sendInfoData(poi.getPhoto(), poi.getName(), poi.getInfoText());
+        }
     }
 
     /**
@@ -229,11 +236,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
                 Log.e(getClass().getSimpleName(), nextInstruction);
                 WatchNotifier.sendNavData(nextInstruction, distance);
-                Toast.makeText(MapActivity.this, nextInstruction, 3*1000).show();
-                handler.postDelayed(this, 10 * 1000);
+                //Toast.makeText(MapActivity.this, nextInstruction, 3*1000).show();
+                handler.postDelayed(this, DIRECTION_DELAY_MILLIS);
             }
         };
-// Start the initial runnable task by posting through the handler
+        // Start the initial runnable task by posting through the handler
         handler.post(runnableCode);
     }
 
