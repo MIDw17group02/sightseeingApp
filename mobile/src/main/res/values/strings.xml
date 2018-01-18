@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">NiceTours</string>
-    <string name="google_maps_key">AIzaSyDS4XKTdBOxv2_qfZcPI_j8l7EphRHBANU</string> <!-- Justin KEY -->
-    <!--<string name="google_maps_key">AIzaSyDzw47QwwNwNM2kFne6KsviyP5bv1SyDak</string>--> <!-- STANDARD KEY -->
+    <!--<string name="google_maps_key">AIzaSyDS4XKTdBOxv2_qfZcPI_j8l7EphRHBANU</string>--> <!-- Justin KEY -->
+    <string name="google_maps_key">AIzaSyDzw47QwwNwNM2kFne6KsviyP5bv1SyDak</string> <!-- STANDARD KEY -->
     <!--<string name="google_maps_key">AIzaSyBHt-nxSl5JUabLPUeOmOutThpt5CmxhVU</string>-->
 
     <string name="title_activity_start">StartActivity</string>
