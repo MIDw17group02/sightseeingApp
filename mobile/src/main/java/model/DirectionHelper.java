@@ -72,7 +72,7 @@ public class DirectionHelper {
                     .position(new LatLng(p2.getLatitude(), p2.getLongitude())).title(p2.getName()+
                             "\nRating: "+
                             p2.getRating() + "\n"+ p2.getVicinity()));
-            currentPOI.showInfoWindow();
+            if (i == 0) currentPOI.showInfoWindow();
         }
 
         // If the user selected a round tour a polyline from the last to first POI is added.
