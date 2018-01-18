@@ -1,7 +1,18 @@
 package model;
 
 import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
+import android.util.Log;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+
+import java.io.IOException;
+
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 /**
  * POI representation class.
@@ -14,7 +25,7 @@ public class POI implements Comparable {
     private String name;
     private double longitude;
     private double latitude;
-    private double rating;   // Google rating from 0.0 to 5.0 stars.
+    private double rating = -1.0;   // Google rating from 0.0 to 5.0 stars.
     private String vicinity; // = Address of the poi
     private Bitmap photo;    // Bitmap of a photo that is queried from the google place.
 
@@ -23,6 +34,7 @@ public class POI implements Comparable {
     private String reference;
 
     private String infoText;
+    private WikipediaFetchTask wikipediaFetchTask;
 
     private boolean visited = false;
 
@@ -171,5 +183,83 @@ public class POI implements Comparable {
         }
 
         return 0;
+    }
+
+    public void startWikiFetchTask() {
+        wikipediaFetchTask = new WikipediaFetchTask();
+        wikipediaFetchTask.execute(name);
+    }
+
+    private class WikipediaFetchTask extends AsyncTask<String, Void, Void> {
+
+        @Override
+        protected Void doInBackground(String... strings) {
+
+            String name = strings[0];
+            if (name == null) {
+                return null;
+            }
+
+            boolean gotResult = false;
+            String wikiResult = "";
+
+            while((!name.equals("")) && !gotResult) {
+
+                String wikiURL = "https://de.wikipedia.org/w/api.php?action=opensearch&search=" + name + "&limit=2&namespace=0&redirects=resolve&format=json";
+                OkHttpClient wikiClient = new OkHttpClient();
+                final Request request = new Request.Builder().url(wikiURL).build();
+                Response response = null;
+
+                try {
+                    response = wikiClient.newCall(request).execute();
+                    JSONArray jsonObjectToken = new JSONArray(response.body().string().trim());
+                    JSONArray infoTextArray = jsonObjectToken.getJSONArray(2);
+
+                    if (infoTextArray.optString(1).equals("")) {
+                        //wenn nur ein Eintrag vorhanden ist
+                        wikiResult = infoTextArray.optString(0);
+                    } else {
+                        //wenn mehrer Einträge vorhanden sind -> immer Begriffserklärungsseite?!
+                        wikiResult = infoTextArray.optString(1);
+                    }
+
+                    if (wikiResult.equals("")) {
+                        //kein InfoText zum Suchbegriff gefunden
+                        if(!name.contains(" ")) {
+                            //kein Leerzeichen mehr vorhanden
+                            name = "";
+                        } else {
+                            String n[] = name.split(" ");
+                            Log.d("Async-WikiFetch", "length:" + n.length);
+                            String newname = "";
+                            int i;
+                            for (i = 0; i < (n.length - 2); i++) {
+                                newname += n[i] + " ";
+                            }
+                            newname += n[i];
+                            name = newname;
+                        }
+                        Log.d("Async-WikiFetch", "new name:" + name);
+                    } else {
+                        Log.d("Async-WikiFetch", "got result!");
+                        gotResult = true;
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if(gotResult) {
+                Log.d("Async-WikiFetch", "InfoText zu " + name + ": " + wikiResult);
+                infoText = wikiResult;
+            } else {
+                Log.d("Async-WikiFetch", "No Info Found for " + name);
+            }
+
+            return null;
+        }
+
     }
 }

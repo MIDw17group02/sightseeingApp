@@ -97,8 +97,7 @@ public class POIFetcher {
                 poi.setDistanceToStart(mLoc.distanceTo(poiLoc)/1000);
 
                 DataModel model = DataModel.getInstance();
-                if (poi.getPhoto() != null && poi.getInfoText() != null) // Better for Showcase
-                    model.addPOI(poi);
+                if (poi.getPhoto() != null) model.addPOI(poi); // Better for Showcase
             }
 
         } catch (JSONException e) {
@@ -106,37 +105,6 @@ public class POIFetcher {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        /* Async
-        client.newCall(request).enqueue(new Callback() {
-
-            @Override
-            public void onFailure(Call call, IOException e) {
-               e.printStackTrace();
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) {
-                //TODO React to ZERO RESULTS
-                Log.d("POIFETCHER", response.toString());
-                JSONObject jsonObjectToken = null;
-                try {
-                    jsonObjectToken = new JSONObject(response.body().string().trim());
-                    JSONArray places = jsonObjectToken.getJSONArray("results");
-
-                    for (int i = 0; i < places.length(); i++) {
-                        JSONObject placeJSON = places.getJSONObject(i);
-                        POI poi = getPOIFromJSON(context, placeJSON);
-                        Log.d("POIFetcher", "Fetched POI " + poi.getName());
-                        DataModel model = DataModel.getInstance();
-                        Log.d("POIFetcher", model.toString());
-                        model.addPOI(poi);
-                    }
-                } catch(Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });*/
     }
 
     /**
@@ -160,7 +128,10 @@ public class POIFetcher {
                 }
             }
             if (poiJSON.has("id")) result.setId(poiJSON.getString("id"));
-            if (poiJSON.has("name")) result.setName(poiJSON.getString("name"));
+            if (poiJSON.has("name")) {
+                result.setName(poiJSON.getString("name"));
+                result.startWikiFetchTask();
+            }
             if (poiJSON.has("place_id")) result.setPlace_id(poiJSON.getString("place_id"));
             if (poiJSON.has("vicinity")) result.setVicinity(poiJSON.getString("vicinity"));
             if (poiJSON.has("rating")) result.setRating(poiJSON.getDouble("rating"));
@@ -185,7 +156,6 @@ public class POIFetcher {
                             InputStream is = response.body().byteStream();
                             Bitmap bm = BitmapFactory.decodeStream(is);
                             result.setPhoto(bm);
-
                             break;
                         } catch (IOException e) {
                             Log.d("getPOIFromJSON", "Could not download photo!");
@@ -193,72 +163,6 @@ public class POIFetcher {
                         }
                     }
                 }
-            }
-
-            //TODO wikipedia api fetch -> Problem: Oft keine oder mehrere Einträge
-            if (poiJSON.has("name")) {
-                String name = poiJSON.getString("name");
-                //name = name.replaceAll(" ", "+");
-                boolean gotResult = false;
-                String infoText = "";
-
-                while((!name.equals("")) && !gotResult) {
-                    String wikiURL = "https://de.wikipedia.org/w/api.php?action=opensearch&search=" + name + "&limit=2&namespace=0&redirects=resolve&format=json";
-                    OkHttpClient wikiClient = new OkHttpClient();
-                    final Request request = new Request.Builder().url(wikiURL).build();
-                    Response response = null;
-
-                    try {
-                        response = wikiClient.newCall(request).execute();
-                        //TODO React to ZERO RESULTS
-                        JSONArray jsonObjectToken = new JSONArray(response.body().string().trim());
-                        JSONArray infoTextAarray = jsonObjectToken.getJSONArray(2);
-                        if (infoTextAarray.optString(1).equals("")) {
-                            //wenn nur ein Eintrag vorhanden ist
-                            infoText = infoTextAarray.optString(0);
-                        } else {
-                            //wenn mehrer Einträge vorhanden sind -> immer Begriffserklärungsseite?!
-                            infoText = infoTextAarray.optString(1);
-                        }
-                        if (infoText.equals("")) {
-                            //kein InfoText zum Suchbegriff gefunden
-                            if(!name.contains(" ")) {
-                                //kein Leerzeichen mehr vorhanden
-                                name = "";
-                            } else {
-                                String n[] = name.split(" ");
-                                Log.d("Phone-WikiFetch", "length:" + n.length);
-                                String newname = "";
-                                int i;
-                                for (i = 0; i < (n.length - 2); i++) {
-                                    newname += n[i] + " ";
-                                }
-                                newname += n[i];
-                                name = newname;
-                            }
-                            Log.d("Phone-WikiFetch", "new name:" + name);
-                        } else {
-                            Log.d("Phone-WikiFetch", "got result!");
-                            gotResult = true;
-                        }
-
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-                if(gotResult == true) {
-                    Log.d("Phone-WikiFetch", "InfoText zu " + name + ": " + infoText);
-                    result.setInfoText(infoText);
-                }
-                else {
-                    Log.d("Phone-WikiFetch", "No Info Found for " + name);
-                    result.setInfoText(null);
-                    //those will be deleted, by setting null
-                }
-
             }
 
         } catch (JSONException e) {
