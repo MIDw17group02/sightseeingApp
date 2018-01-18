@@ -1,12 +1,12 @@
 package com.example.de.testssapplication;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -29,14 +29,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
-import android.os.Handler;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import model.DataModel;
@@ -44,9 +36,6 @@ import model.DirectionHelper;
 import model.ITourTracker;
 import model.POI;
 import network.WatchNotifier;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 
 
 public class MapActivity extends AppCompatActivity implements OnMapReadyCallback, ITourTracker {
@@ -63,6 +52,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private Location mLastKnownLocation;
     private Handler handler = new Handler();
     private DirectionHelper directionHelper;
+
+    //Orientation
+    private int lastDirection = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -212,8 +204,23 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 // 'this' is referencing the Runnable object
                 directionHelper.updateVisitedPOIs();
                 String nextInstruction = directionHelper.nextDirection(MapActivity.this);
+
+                String distance = nextInstruction.split("in")[1];
+                distance = distance.replaceAll("\\s+","");
+                Log.d(TAG, "Distance:#" + distance + "#");
+
+                nextInstruction = nextInstruction.split(" ")[1];
+                Log.d(TAG, "Direction:#" + nextInstruction + "#");
+                int direction = directionToDegree(nextInstruction);
+                if(lastDirection != -1) {
+                    int turn = direction - lastDirection;
+                    nextInstruction = degreeToTurn(turn);
+                }
+                lastDirection = direction;
+
+
                 Log.e(getClass().getSimpleName(), nextInstruction);
-                WatchNotifier.sendNavData(nextInstruction, "");
+                WatchNotifier.sendNavData(nextInstruction, distance);
                 Toast.makeText(MapActivity.this, nextInstruction, 3*1000).show();
                 handler.postDelayed(this, 10 * 1000);
             }
@@ -336,6 +343,53 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         AlertDialog dialog = builder.create();
         dialog.setCancelable(false);
         dialog.show();
+    }
+
+    private int directionToDegree(String directionString) {
+        int degree;
+        switch(directionString) {
+            case "north":       degree = 0; break;
+            case "northeast":   degree = 45; break;
+            case "east":        degree = 90; break;
+            case "southeast":   degree = 135; break;
+            case "south":       degree = 180; break;
+            case "southwest":   degree = 225; break;
+            case "west":        degree = 270; break;
+            case "northwest":   degree = 315; break;
+            default:            degree = 0; break;
+        }
+        return degree;
+    }
+
+    private String degreeToTurn(int degree) {
+        //Eingabe: -359 bis +359
+        if (degree < -180) {
+            degree = degree + 360;
+        }
+        if (degree > 180) {
+            degree = degree - 360;
+        }
+        //nun Werte von -180 bis +180
+
+        String turnCommand = "do nothing";
+        if (degree >= -22 && degree <= 22) {
+            turnCommand = "ahead";
+        } else if (degree >= 23 && degree <= 67) {
+            turnCommand = "hright";
+        } else if (degree >= 68 && degree <= 112) {
+            turnCommand = "right";
+        } else if (degree >= 113 && degree <= 157) {
+            turnCommand = "sright";
+        } else if (degree >= 158 || degree <= -158) {
+            turnCommand = "back";
+        } else if (degree >= -157 && degree <= -113) {
+            turnCommand = "sleft";
+        } else if (degree >= -112 && degree <= -68) {
+            turnCommand = "left";
+        } else if (degree >= -67 && degree <= -23) {
+            turnCommand = "hleft";
+        }
+        return turnCommand;
     }
 
 
