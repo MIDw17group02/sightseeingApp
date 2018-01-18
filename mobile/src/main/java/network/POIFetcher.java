@@ -37,7 +37,7 @@ public class POIFetcher {
      * @param radius  Search radius in meter
      */
     public static void requestPOIs(Context context, int radius) {
-        DataModel model = DataModel.getInstance();
+        DataModel model = DataModel.Companion.getInstance();
         Location location = model.getLastLocation();
         if (location != null) {
             Log.e("fafafafa","location not null");
@@ -77,7 +77,7 @@ public class POIFetcher {
         OkHttpClient client = new OkHttpClient();
         final Request request = new Request.Builder().url(poiURL).build();
         Response response = null;
-        DataModel.getInstance().clearPOIs();
+        DataModel.Companion.getInstance().clearPOIs();
 
         try {
             response = client.newCall(request).execute();
@@ -96,7 +96,7 @@ public class POIFetcher {
                 poiLoc.setLongitude(poi.getLongitude());
                 poi.setDistanceToStart(mLoc.distanceTo(poiLoc)/1000);
 
-                DataModel model = DataModel.getInstance();
+                DataModel model = DataModel.Companion.getInstance();
                 if (poi.getPhoto() != null) model.addPOI(poi); // Better for Showcase
             }
 

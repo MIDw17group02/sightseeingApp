@@ -64,7 +64,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
-        DataModel.getInstance().tourTrackers.add(this);
+        DataModel.Companion.getInstance().getTourTrackers().add(this);
 
         WatchNotifier.setGoogleApiClient(new GoogleApiHelper(this).getGoogleApiClient());
 
@@ -83,9 +83,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         SupportMapFragment map = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         map.getMapAsync(this);
 
-        DataModel.getInstance().getTourStatistics().setWalkedDuration(System.currentTimeMillis());
+        DataModel.Companion.getInstance().getTourStatistics().setWalkedDuration(System.currentTimeMillis());
 
-        for (POI testPOI : DataModel.getInstance().getSelectedPOIs()) {
+        for (POI testPOI : DataModel.Companion.getInstance().getSelectedPOIs()) {
             if (testPOI.getInfoText() != null && testPOI.getName() != null && testPOI.getPhoto() != null) {
                 Log.d("MapActivity", "Sendnonnull " + testPOI.getName());
                 WatchNotifier.sendInfoData(testPOI.getPhoto(), testPOI.getName(), testPOI.getInfoText());
@@ -192,11 +192,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         // Get the current location of the device and set the position of the map.
         getDeviceLocation();
 
-        directionHelper = DirectionHelper.getInstance(mMap);
+        directionHelper = DirectionHelper.Companion.getInstance(mMap);
         List<POI> pois = directionHelper.makeTours();
         directionHelper.addPolylineDirection(this, pois);
 
-        mLastKnownLocation = DataModel.getInstance().getLastLocation();
+        mLastKnownLocation = DataModel.Companion.getInstance().getLastLocation();
         Log.d("Map", "StartLoc " + mLastKnownLocation.toString());
         if (mLastKnownLocation != null) {
             // Set the camera zoom.
