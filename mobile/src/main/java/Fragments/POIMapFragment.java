@@ -264,8 +264,7 @@ public class POIMapFragment extends Fragment implements OnMapReadyCallback,
         }
 
         if (fab != null) {
-            //todo not compatible with sdk19
-            //fab.setForeground(getResources().getDrawable(model.getSelectedPOIs().size() == 0 ? R.drawable.right_arrow_red : R.drawable.right_arrow));
+            fab.setForeground(getResources().getDrawable(model.getSelectedPOIs().size() == 0 ? R.drawable.right_arrow_red : R.drawable.right_arrow));
         }
     }
 
