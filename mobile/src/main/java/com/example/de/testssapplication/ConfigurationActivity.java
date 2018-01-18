@@ -45,8 +45,8 @@ public class ConfigurationActivity extends AppCompatActivity implements GoogleAp
     //Log-Tag
     public static String TAG = "Phone-Configuration";
 
-    private final int GPS_UPDATE_MIN_MILLIS = 5000;
-    private final int GPS_UPDATE_MIN_METERS = 10;
+    private final int GPS_UPDATE_MIN_MILLIS = 10000;
+    private final int GPS_UPDATE_MIN_METERS = 20;
 
     private FloatingActionButton nextButton;
     private Switch switchRound;

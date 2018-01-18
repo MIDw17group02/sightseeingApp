@@ -119,8 +119,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     @Override
     public void OnPOIReached(POI poi) {
-        //TODO send info to watch
-        //WatchNotifier.sendInfoData(poi.getPhoto(),poi.getName(),poi.getInfoText());
+        WatchNotifier.sendInfoData(poi.getPhoto(),poi.getName(),poi.getInfoText());
         Toast.makeText(this, poi.getName(), Toast.LENGTH_LONG).show();
     }
 
