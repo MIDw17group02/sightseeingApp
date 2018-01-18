@@ -75,7 +75,7 @@ public class POIListFragment extends Fragment {
         @Override
         public int getCount() {
             if (fab != null) {
-                //fab.setForeground(getResources().getDrawable(model.getSelectedPOIs().size() == 0 ? R.drawable.right_arrow_red : R.drawable.right_arrow));
+                fab.setForeground(getResources().getDrawable(model.getSelectedPOIs().size() == 0 ? R.drawable.right_arrow_red : R.drawable.right_arrow));
             }
 
             return model.getPOIcount();
