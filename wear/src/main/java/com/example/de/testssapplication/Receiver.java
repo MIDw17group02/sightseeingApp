@@ -1,5 +1,6 @@
 package com.example.de.testssapplication;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -11,6 +12,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.wearable.Asset;
+import com.google.android.gms.wearable.DataEvent;
 import com.google.android.gms.wearable.DataEventBuffer;
 import com.google.android.gms.wearable.DataItem;
 import com.google.android.gms.wearable.DataItemBuffer;
@@ -34,6 +36,7 @@ public class Receiver extends WearableListenerService {
     private GoogleApiClient mGoogleApiClient;
     private static final int TIMEOUT_MS = 200;
     private static final String DATA_PATH = "/watch_data";
+    private static final String DATA_PATH_POI = "/watch_data_poi";
     private static final String OPEN_NAV_CMD = "open-nav-app";
     private static final String OPEN_INFO_CMD = "open-info-app";
 
@@ -62,7 +65,7 @@ public class Receiver extends WearableListenerService {
                 if (dataItems.getCount() != 0) {
 
                     for (DataItem item : dataItems) {
-                        if ( item.getUri().getPath().equals(DATA_PATH) ) {
+                        if ( item.getUri().getPath().equals(DATA_PATH_POI) ) {
                             DataMap dataMap = DataMapItem.fromDataItem(item).getDataMap();
                             Log.d("WATCH", dataMap.toString());
 
@@ -84,6 +87,8 @@ public class Receiver extends WearableListenerService {
                             } catch (ExecutionException e) {
                                 e.printStackTrace();
                             }
+                            bitmap = scaleDownBitmap(bitmap, 100, getApplicationContext());
+                            Log.d(TAG, "Resized Bitmap ?!");
 
 
 
@@ -147,8 +152,28 @@ public class Receiver extends WearableListenerService {
     }
 
     @Override
-    public void onDataChanged(DataEventBuffer dataEvents) {
+    public void onDataChanged(DataEventBuffer dataEventBuffer) {
         Log.d(TAG,"data Changed");
+        super.onDataChanged(dataEventBuffer);
+
+        connectGoogleApiClient();
+
+        if(dataEventBuffer != null) {
+            Log.d(TAG, "onDataChanged: count = " + dataEventBuffer.getCount());
+
+            for (DataEvent event : dataEventBuffer) {
+                Log.d(TAG, "onDataChanged(): path= '" + event.getDataItem().getUri().getPath() + "'");
+
+                if( event.getDataItem().getUri().getPath().equals(DATA_PATH) ){
+                    fetchNavAndStartActivity();
+                }else if( event.getDataItem().getUri().getPath().equals(DATA_PATH_POI) ){
+                    fetchInfoAndStartActivity();
+                }else{
+                    Log.d(TAG, "onDataChanged(): unmapped path='"+event.getDataItem().getUri().getPath()+"'");
+                }
+            }
+        }
+
     }
 
     private class MyTask extends AsyncTask<Asset, String, Bitmap> {
@@ -223,9 +248,10 @@ public class Receiver extends WearableListenerService {
 
                     //make sure newest data is available & open app
                     if( msg.equals(OPEN_INFO_CMD) ) {
-                        fetchInfoAndStartActivity();
+
+                        //fetchInfoAndStartActivity();
                     } else if( msg.equals(OPEN_NAV_CMD) ) {
-                        fetchNavAndStartActivity();
+                        //fetchNavAndStartActivity();
                     }
 
                 }else{
@@ -235,5 +261,17 @@ public class Receiver extends WearableListenerService {
                 Log.d(TAG, path+" != "+DATA_PATH);
             }
         }
+    }
+
+    private Bitmap scaleDownBitmap(Bitmap photo, int newHeight, Context context) {
+
+        final float densityMultiplier = context.getResources().getDisplayMetrics().density;
+
+        int h= (int) (newHeight*densityMultiplier);
+        int w= (int) (h * photo.getWidth()/((double) photo.getHeight()));
+
+        photo=Bitmap.createScaledBitmap(photo, w, h, true);
+
+        return photo;
     }
 }

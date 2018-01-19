@@ -26,6 +26,7 @@ public class WatchNotifier{
     private static GoogleApiClient mGoogleApiClient = null;
     private static String watchId = null;
     private static final String DATA_PATH = "/watch_data";
+    private static final String DATA_PATH_POI = "/watch_data_poi";
     private static final String OPEN_NAV_CMD = "open-nav-app";
     private static final String OPEN_INFO_CMD = "open-info-app";
 
@@ -42,16 +43,20 @@ public class WatchNotifier{
     //Schicke Sehenswürdigkeit Info
     public static void sendInfoData(Bitmap bitmap, String name, String info){
         Asset asset = createAssetFromBitmap(bitmap);
-        Log.d("WatchNotifier", "ASSET " + asset);
+        Log.d(TAG, "ASSET " + asset);
+        Log.d(TAG, "client: " + mGoogleApiClient.toString() + "connected:" + mGoogleApiClient.isConnected());
 
-        PutDataMapRequest putDataMapReq = PutDataMapRequest.create(DATA_PATH);
+        PutDataMapRequest putDataMapReq = PutDataMapRequest.create(DATA_PATH_POI);
         putDataMapReq.getDataMap().putString("name", name);
         putDataMapReq.getDataMap().putString("info", info);
         putDataMapReq.getDataMap().putAsset("image", asset);
         putDataMapReq.setUrgent();
 
+        Log.d(TAG, "test1");
         PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
+        Log.d(TAG, "test2");
         PendingResult<DataApi.DataItemResult> pendingResult = Wearable.DataApi.putDataItem(mGoogleApiClient, putDataReq);
+        Log.d(TAG, "test3");
 
         pendingResult.setResultCallback(new ResultCallback<DataApi.DataItemResult>() {
             @Override
@@ -60,7 +65,7 @@ public class WatchNotifier{
                     Log.d(TAG, "Data item set: " + result.getDataItem().getUri());
 
                     //Messeage an Uhr senden (starten der App)
-                    Wearable.MessageApi.sendMessage(mGoogleApiClient, watchId, DATA_PATH, OPEN_INFO_CMD.getBytes());
+                    //Wearable.MessageApi.sendMessage(mGoogleApiClient, watchId, DATA_PATH_POI, OPEN_INFO_CMD.getBytes());
                 }
             }
         });
@@ -92,7 +97,7 @@ public class WatchNotifier{
                 if(result.getStatus().isSuccess()) {
                     Log.d(TAG, "Data item set: " + result.getDataItem().getUri());
                     //Messeage an Uhr senden (starten der App)
-                    Wearable.MessageApi.sendMessage(mGoogleApiClient, watchId, DATA_PATH, OPEN_NAV_CMD.getBytes());
+                    //Wearable.MessageApi.sendMessage(mGoogleApiClient, watchId, DATA_PATH, OPEN_NAV_CMD.getBytes());
                 }
                 else {
                     Log.d(TAG, "fail sending Data to watch");
