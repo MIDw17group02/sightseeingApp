@@ -58,6 +58,13 @@ public class WatchNotifier{
         PendingResult<DataApi.DataItemResult> pendingResult = Wearable.DataApi.putDataItem(mGoogleApiClient, putDataReq);
         Log.d(TAG, "test3");
 
+        if(mGoogleApiClient == null) {
+            Log.d(TAG, "apiclient == null");
+        }
+        if(watchId == null) {
+            Log.d(TAG, "watchid == null");
+        }
+
         pendingResult.setResultCallback(new ResultCallback<DataApi.DataItemResult>() {
             @Override
             public void onResult(final DataApi.DataItemResult result) {
@@ -80,7 +87,7 @@ public class WatchNotifier{
         putDataMapReq.setUrgent();
         PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
 
-        Log.d(TAG, "api: " + mGoogleApiClient.toString());
+        Log.d(TAG, "client: " + mGoogleApiClient.toString() + "connected:" + mGoogleApiClient.isConnected());
         Log.d(TAG, "watchID: " + watchId);
 
         if(mGoogleApiClient == null) {
