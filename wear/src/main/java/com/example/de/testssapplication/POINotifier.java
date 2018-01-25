@@ -5,6 +5,7 @@ import android.app.Fragment;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.support.wearable.activity.WearableActivity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,6 +36,7 @@ public class POINotifier extends WearableActivity {
             bitmap = (Bitmap) intent.getParcelableExtra("image");
             name = intent.getStringExtra("name");
             info = intent.getStringExtra("info");
+            ((Vibrator) getSystemService(VIBRATOR_SERVICE)).vibrate(new long[]{0, 200, 50, 200}, -1); //vibrate
         }
 
 

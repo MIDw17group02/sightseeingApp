@@ -59,6 +59,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     //Orientation
     private int lastDirection = -1;
+    private String lastInstruction = "";
+    private String lastDistance = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -224,18 +226,23 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 distance = distance.replaceAll("\\s+","");
                 Log.d(TAG, "Distance:#" + distance + "#");
 
-                nextInstruction = nextInstruction.split(" ")[1];
-                Log.d(TAG, "Direction:#" + nextInstruction + "#");
-                int direction = directionToDegree(nextInstruction);
                 if(lastDirection != -1) {
+                    nextInstruction = nextInstruction.split(" ")[1];
+                    int direction = directionToDegree(nextInstruction);
                     int turn = direction - lastDirection;
                     nextInstruction = degreeToTurn(turn);
+                    lastDirection = direction;
                 }
-                lastDirection = direction;
-
+                Log.d(TAG, "Direction:#" + nextInstruction + "#");
+                if(!(nextInstruction.equals(lastInstruction)) || !(distance.equals(lastDistance))) {
+                    //nur senden, wenn sich was verändert
+                    WatchNotifier.sendNavData(nextInstruction, distance);
+                    Log.d(TAG, "send new Direction-Instruction");
+                    lastInstruction = nextInstruction;
+                    lastDistance = distance;
+                }
 
                 Log.e(getClass().getSimpleName(), nextInstruction);
-                WatchNotifier.sendNavData(nextInstruction, distance);
                 //Toast.makeText(MapActivity.this, nextInstruction, 3*1000).show();
                 handler.postDelayed(this, DIRECTION_DELAY_MILLIS);
             }
