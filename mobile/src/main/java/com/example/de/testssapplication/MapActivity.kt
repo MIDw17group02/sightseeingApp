@@ -1,7 +1,6 @@
 package com.example.de.testssapplication
 
 import android.app.AlertDialog
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
@@ -14,7 +13,6 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
-
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.places.GeoDataClient
@@ -26,11 +24,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.android.gms.tasks.Task
-
 import model.DataModel
 import model.DirectionHelper
 import model.ITourTracker
@@ -77,7 +71,9 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, ITourTracker {
         map.getMapAsync(this)
 
         DataModel.instance.tourStatistics?.walkedDuration = System.currentTimeMillis()
+    }
 
+    private fun sendAnyPOI() { //TODO just for testing
         for (testPOI in DataModel.instance.selectedPOIs) {
             if (testPOI.infoText != null && testPOI.name != null && testPOI.photo != null) {
                 Log.d("MapActivity", "Sendnonnull " + testPOI.name)
@@ -86,7 +82,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, ITourTracker {
             }
         }
     }
-
 
     override fun OnTourEnd() {
         val builder = AlertDialog.Builder(this)
@@ -194,14 +189,13 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, ITourTracker {
                 var distance = nextInstruction.split("in".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[1]
                 distance = distance.replace("\\s+".toRegex(), "")
                 Log.d(TAG, "Distance:#$distance#")
-
+                var instruct = nextInstruction.split(" ".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[1]
+                val direction = directionToDegree(instruct)
                 if (lastDirection != -1) {
-                    nextInstruction = nextInstruction.split(" ".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[1]
-                    val direction = directionToDegree(nextInstruction)
                     val turn = direction - lastDirection
                     nextInstruction = degreeToTurn(turn)
-                    lastDirection = direction
                 }
+                lastDirection = direction
                 Log.d(TAG, "Direction:#$nextInstruction#")
                 if (nextInstruction != lastInstruction || distance != lastDistance) {
                     //nur senden, wenn sich was verändert
@@ -210,7 +204,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, ITourTracker {
                     lastInstruction = nextInstruction
                     lastDistance = distance
                 }
-
                 Log.e(javaClass.simpleName, nextInstruction)
                 //Toast.makeText(MapActivity.this, nextInstruction, 3*1000).show();
                 handler.postDelayed(this, DIRECTION_DELAY_MILLIS.toLong())

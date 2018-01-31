@@ -4,15 +4,12 @@ import android.graphics.Bitmap
 import android.util.Log
 
 import com.google.android.gms.common.api.GoogleApiClient
-import com.google.android.gms.common.api.PendingResult
-import com.google.android.gms.common.api.ResultCallback
 import com.google.android.gms.wearable.Asset
-import com.google.android.gms.wearable.DataApi
 import com.google.android.gms.wearable.PutDataMapRequest
-import com.google.android.gms.wearable.PutDataRequest
 import com.google.android.gms.wearable.Wearable
 
 import java.io.ByteArrayOutputStream
+import java.util.*
 
 /**
  * Created by Justin on 06.12.2017.
@@ -40,16 +37,31 @@ object WatchNotifier {
         watchId = wID
     }
 
+    //randomString, so dataChange
+    private fun getRandomString(): String {
+        val SALTCHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
+        val salt = StringBuilder()
+        val rnd = Random()
+        while (salt.length < 18) { // length of the random string.
+            val index = (rnd.nextFloat() * SALTCHARS.length).toInt()
+            salt.append(SALTCHARS[index])
+        }
+        return salt.toString()
+    }
+
     //Schicke Sehenswürdigkeit Info
     fun sendInfoData(bitmap: Bitmap, name: String, info: String) {
         val asset = createAssetFromBitmap(bitmap)
         Log.d(TAG, "ASSET " + asset)
         Log.d(TAG, "client: " + mGoogleApiClient!!.toString() + "connected:" + mGoogleApiClient!!.isConnected)
-
+        if (!mGoogleApiClient!!.isConnected()) {
+            mGoogleApiClient!!.connect()
+        }
         val putDataMapReq = PutDataMapRequest.create(DATA_PATH_POI)
         putDataMapReq.dataMap.putString("name", name)
         putDataMapReq.dataMap.putString("info", info)
         putDataMapReq.dataMap.putAsset("image", asset)
+        putDataMapReq.dataMap.putString("random", getRandomString()) //randomString, so DataChange
         putDataMapReq.setUrgent()
 
         Log.d(TAG, "test1")
@@ -78,14 +90,16 @@ object WatchNotifier {
     //Schicke Navigations Daten
     fun sendNavData(direction: String, distance: String) {
         Log.d(TAG, "Try sending data...")
+        Log.d(TAG, "client: " + mGoogleApiClient!!.toString() + "connected:" + mGoogleApiClient!!.isConnected)
+        Log.d(TAG, "watchID: " + watchId)
+        if (!mGoogleApiClient!!.isConnected()) {
+            mGoogleApiClient!!.connect()
+        }
         val putDataMapReq = PutDataMapRequest.create(DATA_PATH)
         putDataMapReq.dataMap.putString("dir", direction)
         putDataMapReq.dataMap.putString("dis", distance)
         putDataMapReq.setUrgent()
         val putDataReq = putDataMapReq.asPutDataRequest()
-
-        Log.d(TAG, "client: " + mGoogleApiClient!!.toString() + "connected:" + mGoogleApiClient!!.isConnected)
-        Log.d(TAG, "watchID: " + watchId)
 
         if (mGoogleApiClient == null) {
             Log.d(TAG, "apiclient == null")

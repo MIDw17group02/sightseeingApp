@@ -3,10 +3,8 @@ package com.example.de.testssapplication
 import android.annotation.SuppressLint
 import android.app.Fragment
 import android.content.Context
-import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
-import android.os.Parcelable
 import android.os.Vibrator
 import android.support.wearable.activity.WearableActivity
 import android.view.LayoutInflater
@@ -94,7 +92,7 @@ class POINotifier : WearableActivity() {
     @SuppressLint("ValidFragment")
     inner class CardFrontFragment : Fragment() {
         override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                                  savedInstanceState: Bundle): View? {
+                                  savedInstanceState: Bundle?): View? {
             val rootView_front = inflater.inflate(R.layout.fragment_card_front, container, false)
             val iv = rootView_front.findViewById<View>(R.id.imageView) as ImageView
             iv.setImageBitmap(bitmap)
@@ -111,7 +109,7 @@ class POINotifier : WearableActivity() {
     @SuppressLint("ValidFragment")
     inner class CardBackFragment : Fragment() {
         override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                                  savedInstanceState: Bundle): View? {
+                                  savedInstanceState: Bundle?): View? {
             val rootView_back = inflater.inflate(R.layout.fragment_card_back, container, false)
             val nameView = rootView_back.findViewById<View>(R.id.name) as TextView
             nameView.text = name

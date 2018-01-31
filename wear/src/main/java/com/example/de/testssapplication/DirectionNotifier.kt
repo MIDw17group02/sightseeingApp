@@ -1,12 +1,9 @@
 package com.example.de.testssapplication
 
 import android.content.Context
-import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.support.wearable.activity.WearableActivity
 import android.util.Log
-import android.view.View
 import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.TextView
@@ -39,8 +36,10 @@ class DirectionNotifier : WearableActivity() {
             editor.apply()
             if (direction!!.length > 7) {
                 directionView!!.text = direction
+                ditanceView!!.text = ""
+            } else {
+                ditanceView!!.text = distance
             }
-            ditanceView!!.text = distance
         } else {
             val prefs = getPreferences(Context.MODE_PRIVATE)
             direction = prefs.getString("direction", "undefined")

@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/MID.iml" filepath="$PROJECT_DIR$/MID.iml" />
       <module fileurl="file://E:\Workspace\sightseeingApp\MID.iml" filepath="E:\Workspace\sightseeingApp\MID.iml" />
       <module fileurl="file://$PROJECT_DIR$/mobile/mobile.iml" filepath="$PROJECT_DIR$/mobile/mobile.iml" />
-      <module fileurl="file://$PROJECT_DIR$/sightseeingApp.iml" filepath="$PROJECT_DIR$/sightseeingApp.iml" />
       <module fileurl="file://D:\git\MID\sightseeingApp.iml" filepath="D:\git\MID\sightseeingApp.iml" />
       <module fileurl="file://$PROJECT_DIR$/wear/wear.iml" filepath="$PROJECT_DIR$/wear/wear.iml" />
     </modules>
